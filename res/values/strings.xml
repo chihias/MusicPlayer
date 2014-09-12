@@ -6,5 +6,8 @@
     <string name="action_settings">Settings</string>
     <string name="welcome_to_list_fragment">list_fragment! </string>
     <string name="welcome_to_player_fragment">player_fragment! </string>
+    <string name="btn_text_play">play </string>
+    <string name="btn_text_stop">stop </string>
+    <string name="btn_text_pause">pause </string>
 
 </resources>

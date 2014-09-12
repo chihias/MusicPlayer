@@ -14,4 +14,25 @@
         android:layout_height="wrap_content"
         android:text="@string/welcome_to_player_fragment" />
 
+    <Button
+        android:id="@+id/button_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_view_1"
+        android:text="@string/btn_text_play" />
+
+    <Button
+        android:id="@+id/button_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_play"
+        android:text="@string/btn_text_stop" />
+
+    <Button
+        android:id="@+id/button_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_stop"
+        android:text="@string/btn_text_pause" />
+
 </RelativeLayout>

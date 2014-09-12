@@ -3,6 +3,19 @@
     tools:context="com.example.gittest.MainActivity" >
 
     <item
+        android:id="@+id/action_shuffle"
+        android:icon="@drawable/rand"
+        android:orderInCategory="1"
+        android:showAsAction="ifRoom"
+        android:title="Shuffle"/>
+    <item
+        android:id="@+id/action_end"
+        android:icon="@drawable/end"
+        android:orderInCategory="2"
+        android:showAsAction="always"
+        android:title="End"/>
+    
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
