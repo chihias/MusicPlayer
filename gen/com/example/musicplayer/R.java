@@ -20,32 +20,61 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f040000;
         public static final int activity_vertical_margin=0x7f040001;
-        public static final int button1_margin_top=0x7f040002;
+        public static final int artist_textsize=0x7f040012;
+        public static final int nextsongbotton_marginleft=0x7f04000d;
+        public static final int nextsongbotton_size_height=0x7f040009;
+        public static final int nextsongbotton_size_width=0x7f040008;
+        public static final int pausebotton_size_height=0x7f040005;
+        public static final int pausebotton_size_width=0x7f040004;
+        public static final int pausesongbotton_marginleft=0x7f04000c;
+        public static final int playbotton_size_height=0x7f040003;
+        public static final int playbotton_size_width=0x7f040002;
+        public static final int playsongbotton_marginleft=0x7f04000b;
+        public static final int prevsongbotton_marginleft=0x7f04000a;
+        public static final int prevsongbotton_margintop=0x7f04000e;
+        public static final int prevsongbotton_size_height=0x7f040007;
+        public static final int prevsongbotton_size_width=0x7f040006;
+        public static final int processbar_margintop=0x7f040010;
+        public static final int songtitle_textsize=0x7f040011;
+        public static final int textview_songtitle_margintop=0x7f04000f;
     }
     public static final class drawable {
-        public static final int end=0x7f020000;
-        public static final int headphone=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int play=0x7f020003;
-        public static final int rand=0x7f020004;
+        public static final int artist_view=0x7f020000;
+        public static final int end=0x7f020001;
+        public static final int headphone=0x7f020002;
+        public static final int ic_launcher=0x7f020003;
+        public static final int nextsong_btn=0x7f020004;
+        public static final int pause_btn=0x7f020005;
+        public static final int play=0x7f020006;
+        public static final int play_btn=0x7f020007;
+        public static final int prevsong_btn=0x7f020008;
+        public static final int rand=0x7f020009;
+        public static final int stopplaying=0x7f02000a;
     }
     public static final class id {
-        public static final int MainActivityUI=0x7f080000;
-        public static final int action_end=0x7f080009;
-        public static final int action_settings=0x7f08000a;
-        public static final int action_shuffle=0x7f080008;
-        public static final int button_pause=0x7f080005;
-        public static final int button_play=0x7f080003;
-        public static final int button_stop=0x7f080004;
-        public static final int song_artist=0x7f080007;
-        public static final int song_list=0x7f080001;
-        public static final int song_title=0x7f080006;
-        public static final int text_view_1=0x7f080002;
+        public static final int action_end=0x7f080010;
+        public static final int action_settings=0x7f080011;
+        public static final int action_shuffle=0x7f08000f;
+        public static final int button_nextsong=0x7f080005;
+        public static final int button_play_and_pause=0x7f080004;
+        public static final int button_prevsong=0x7f080003;
+        public static final int controller_frag_layout=0x7f080002;
+        public static final int controller_fragment_container=0x7f080001;
+        public static final int imageView1=0x7f08000a;
+        public static final int list_frag_layout=0x7f08000b;
+        public static final int list_fragment_container=0x7f080000;
+        public static final int seekBar_songProcess=0x7f080008;
+        public static final int song_artist=0x7f08000e;
+        public static final int song_list=0x7f08000c;
+        public static final int song_title=0x7f08000d;
+        public static final int textview_artist=0x7f080006;
+        public static final int textview_songduration=0x7f080009;
+        public static final int textview_songtitle=0x7f080007;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int list_fragment=0x7f030001;
-        public static final int player_fragment=0x7f030002;
+        public static final int controller_fragment=0x7f030001;
+        public static final int list_fragment=0x7f030002;
         public static final int song=0x7f030003;
     }
     public static final class menu {
@@ -54,10 +83,9 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f050002;
         public static final int app_name=0x7f050000;
-        public static final int btn_text_pause=0x7f050007;
-        public static final int btn_text_play=0x7f050005;
-        public static final int btn_text_stop=0x7f050006;
+        public static final int artist_txt=0x7f050006;
         public static final int hello_world=0x7f050001;
+        public static final int song_title_txt=0x7f050005;
         public static final int welcome_to_list_fragment=0x7f050003;
         public static final int welcome_to_player_fragment=0x7f050004;
     }

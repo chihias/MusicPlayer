@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/controller_frag_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#272C32" >
+
+    <Button
+        android:id="@+id/button_prevsong"
+        android:layout_width="@dimen/prevsongbotton_size_width"
+        android:layout_height="@dimen/prevsongbotton_size_height"
+        android:layout_marginLeft="@dimen/prevsongbotton_marginleft"
+        android:layout_marginTop="@dimen/prevsongbotton_margintop"
+        android:layout_toRightOf="@id/controller_fragment_container"
+        android:background="@drawable/prevsong_btn" />
+
+    <Button
+        android:id="@+id/button_play_and_pause"
+        android:layout_width="@dimen/playbotton_size_width"
+        android:layout_height="@dimen/playbotton_size_height"
+        android:layout_alignBaseline="@id/button_prevsong"
+        android:layout_marginLeft="@dimen/playsongbotton_marginleft"
+        android:layout_toRightOf="@id/button_prevsong"
+        android:background="@drawable/pause_btn" />
+
+    <Button
+        android:id="@+id/button_nextsong"
+        android:layout_width="@dimen/nextsongbotton_size_width"
+        android:layout_height="@dimen/nextsongbotton_size_height"
+        android:layout_alignBaseline="@id/button_prevsong"
+        android:layout_marginLeft="@dimen/nextsongbotton_marginleft"
+        android:layout_toRightOf="@+id/button_play_and_pause"
+        android:background="@drawable/nextsong_btn" />
+
+    <TextView
+        android:id="@+id/textview_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_prevsong"
+        android:layout_alignLeft="@+id/textview_songtitle"
+        android:text="@string/artist_txt"
+        android:textColor="#EEEEEE"
+        android:textSize="@dimen/artist_textsize" />
+
+    <TextView
+        android:id="@+id/textview_songtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textview_artist"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="@dimen/textview_songtitle_margintop"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/song_title_txt"
+        android:textColor="#EEEEEE"
+        android:textSize="@dimen/songtitle_textsize" />
+
+    <SeekBar
+        android:id="@+id/seekBar_songProcess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="@dimen/processbar_margintop" />
+
+    <TextView
+        android:id="@+id/textview_songduration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/seekBar_songProcess"
+        android:layout_alignBottom="@id/seekBar_songProcess"
+        android:textColor="#EEEEEE"
+        android:textSize="10sp" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_alignLeft="@id/seekBar_songProcess"
+        android:layout_marginTop="63dp"
+        android:src="@drawable/artist_view" />
+
+</RelativeLayout>

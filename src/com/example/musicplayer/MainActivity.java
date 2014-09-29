@@ -1,44 +1,49 @@
 
 package com.example.musicplayer;
 
+import java.util.ArrayList;
+
+import com.example.musicplayer.ListFragment.OnPlaySongListener;
+
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.MediaController.MediaPlayerControl;
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements OnPlaySongListener {
+
+    private ControllerFragment mControllerFragment;
+    private ListFragment mListFragment;
+    private View mControlFragContainer;
+    private HeadsetPlugReceiver mHeadsetPlugReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //addPlayerFragment();
-        addListFragment();
-    }
 
-    private void addPlayerFragment() {
-        Fragment newFrag = new playerFragment();
-        FragmentManager fragMng = getFragmentManager();
-        FragmentTransaction fragTran = fragMng.beginTransaction();
-        fragTran.add(R.id.MainActivityUI, newFrag, "player");
-        fragTran.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragTran.commit();
-    }
+        mListFragment = new ListFragment();
+        mControllerFragment = new ControllerFragment();
+        mControlFragContainer = findViewById(R.id.controller_fragment_container);
 
-    private void addListFragment() {
-        Fragment newFrag = new ListFragment();
-        FragmentManager fragMng = getFragmentManager();
-        FragmentTransaction fragTran = fragMng.beginTransaction();
-        fragTran.add(R.id.MainActivityUI, newFrag, "list");
-        fragTran.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragTran.commit(); 
+        if (findViewById(R.id.list_fragment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+            addListFragment();
+        }
+        if (findViewById(R.id.controller_fragment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+            addControllerFragment();
+        }
+       // registerHeadsetPlugReceiver();
     }
 
     @Override
@@ -50,14 +55,87 @@ public class MainActivity extends Activity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_shuffle:
+                mControllerFragment.setMusicSrvShuffle();
+                break;
+            case R.id.action_end:
+                mControllerFragment.setMusicSrvEnd();
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onSongSelected(View view) {
+        // Toast.makeText(this,
+        // Boolean.toString(this.getControlFragContainerVisibility()),
+        // Toast.LENGTH_LONG).show();
+        if (this.getControlFragContainerVisibility()) {
+
+        } else {
+            setControlFragContainerVisiblity();
+        }
+        mControllerFragment.onPlaySong(view);
+    }
+
+    @Override
+    public void getSongList(ArrayList<Song> list) {
+        mControllerFragment.setMySongList(list);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregisterReceiver();
+        //mControllerFragment.stopMusicService();
+        //stopService(new Intent(this,MusicService.class));
+    }
+    
+    private void addControllerFragment() {
+        FragmentManager fragMng = getFragmentManager();
+        FragmentTransaction fragTran = fragMng.beginTransaction();
+        fragTran.add(R.id.controller_fragment_container, mControllerFragment, "controller");
+        fragTran.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragTran.commit();
+    }
+
+    private void addListFragment() {
+        FragmentManager fragMng = getFragmentManager();
+        FragmentTransaction fragTran = fragMng.beginTransaction();
+        fragTran.add(R.id.list_fragment_container, mListFragment, "list");
+        fragTran.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragTran.commit();
+    }
+/*
+    private void registerHeadsetPlugReceiver(){
+        mHeadsetPlugReceiver = new HeadsetPlugReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.HEADSET_PLUG");
+        registerReceiver();
+    }
+
+    private void registerReceiver(){
+        
+    }
+
+    private void unregisterReceiver(){
+        this.unregisterReceiver(mHeadsetPlugReceiver);
+    }
+*/
+    public boolean getControlFragContainerVisibility() {
+        if (mControlFragContainer.getVisibility() == View.VISIBLE)
+            return true;
+        else
+            return false;
+    }
+
+    public void setControlFragContainerVisiblity() {
+        mControlFragContainer.setVisibility(View.VISIBLE);
+    }
+    
 
 }
