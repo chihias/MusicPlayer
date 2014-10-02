@@ -14,13 +14,16 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.opengl.Visibility;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.MediaController.MediaPlayerControl;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -34,10 +37,16 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private Button mPlayandPauseButton;
     private Button mPrevButton;
     private Button mNextButton;
+    private FrameLayout mControllerFrag;
     private TextView mSongTitleTextView;
     private TextView mSongArtistTextView;
     private TextView mSongDurationTextView;
     private SeekBar mSeekBar;
+
+    private Handler mHandler;
+    private int mCurrentProcess;
+    private int mMaxProcess;
+    private final int PRO = 1;
 
     // private Button mStopButton;
     private MusicService mMusicSrv = null;
@@ -66,6 +75,9 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             });
             mMusicSrv.setList(mSongList);
             mMusicBound = true;
+            if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
+                updateControllerView();
+            }
         }
 
         @Override
@@ -109,22 +121,13 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
                     mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
                     break;
                 }
-
-                // case R.id.button_play:
-                // mMusicSrv.goPlay();
-                // mPlayButton.setVisibility(View.INVISIBLE);
-                // mPauseButton.setVisibility(View.VISIBLE);
-                // break;
-                // case R.id.button_pause:
-                // mMusicSrv.pausePlayer();
-                // mPlayButton.setVisibility(View.VISIBLE);
-                // mPauseButton.setVisibility(View.INVISIBLE);
-                // break;
             case R.id.button_prevsong:
                 mMusicSrv.playPrev();
+                mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
                 break;
             case R.id.button_nextsong:
                 mMusicSrv.playNext();
+                mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
                 break;
             default:
                 break;
@@ -188,6 +191,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mSongTitleTextView = (TextView) getView().findViewById(R.id.textview_songtitle);
         mSongArtistTextView = (TextView) getView().findViewById(R.id.textview_artist);
         mSongDurationTextView = (TextView) getView().findViewById(R.id.textview_songduration);
+        mControllerFrag = (FrameLayout) getView().findViewById(R.id.controller_fragment_container);
 
     }
 
@@ -202,11 +206,41 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         Log.e("123", "updateControllerView");
         mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
         mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
-        // Log.e("123", "Song duration = " + mMusicSrv.getDur());
-        mSeekBar.setMax(mMusicSrv.getDur());
-        Log.e("123", "dur= "+ String.valueOf(mMusicSrv.getDur()));
         // mSongDurationTextView.setText(mMusicSrv.getDur());
-        mSeekBar.setProgress(mMusicSrv.getPosn());
+        // Log.e("123", "Song duration = " + mMusicSrv.getDur());
+        // Log.e("123", "dur= " + String.valueOf(mMusicSrv.getDur()));
+
+//        mCurrentProcess = mMusicSrv.getPosn();
+//        mMaxProcess = mMusicSrv.getDur();
+//        mHandler = new Handler() {
+//
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//
+//                switch (msg.what) {
+//                    case PRO:
+//                        if (mCurrentProcess < mMaxProcess) {
+//                            mCurrentProcess += 1;
+//                            mSeekBar.incrementProgressBy(1);
+//                            mHandler.sendEmptyMessageDelayed(PRO, 60);
+//                        }
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//
+//        };
+//        mCurrentProcess = mCurrentProcess > 0 ? mCurrentProcess : 0;
+//        mSeekBar.setMax(mMaxProcess);
+//        mSeekBar.setProgress(mCurrentProcess);
+//        mHandler.sendEmptyMessage(PRO);
+
+        mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
+        if (mMusicSrv.isPaused()) {
+            mPlayandPauseButton.setBackgroundResource(R.drawable.play_btn);
+        }
 
     }
 

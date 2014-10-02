@@ -4,11 +4,14 @@ package com.example.musicplayer;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -36,10 +39,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private String mSongTitle = "";
     private String mSongArtist = "";
     private static final int NOTIFY_ID = 1;
-    private boolean shuffle = false;
+    private boolean mShuffle = false;
+    private boolean mServicePaused = false;
     private Random rand;
 
     private OnMusicStateListener mOnMusicStateListener;
+    private HeadsetPlugReceiver mHeadsetPlugReceiver;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -53,6 +58,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mMediaPlayer = new MediaPlayer();
         initMusicPlayer();
         rand = new Random();
+        registerHeadsetPlugReceiver();
     }
 
     public void initMusicPlayer() {
@@ -77,6 +83,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onDestroy() {
         Log.e("123", "onDestroy");
         super.onDestroy();
+        unregisterReceiver();
         mMediaPlayer.release();
     }
 
@@ -89,14 +96,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void checkStopself() {
         Log.e("123", "checkStopself");
-        if (!mMediaPlayer.isPlaying()) {
+        if (!mMediaPlayer.isPlaying() && !this.isPaused()) {
             stopSelf();
         }
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("123", "onStartCommand");
+        if("refresh_ui".equals(intent.getAction())) {
+            Log.e("123", "Refresh UI");
+        }
+        // if (intent != null) {
+        // int intPauseIntent = intent.getIntExtra("pauseIntent", 0);
+        // if (intPauseIntent == 1) {
+        // this.pausePlayer();
+        // }
+        // }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -129,7 +146,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Log.e("123", "onPrepared");
         mp.start();
         mOnMusicStateListener.onMusicPrepareCompleteListener();
-
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
@@ -161,6 +177,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         } catch (Exception e) {
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
+        mServicePaused = false;
         mMediaPlayer.prepareAsync();
     }
 
@@ -185,8 +202,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return mMediaPlayer.isPlaying();
     }
 
+    public boolean isPaused() {
+        return this.mServicePaused;
+    }
+
     public void pausePlayer() {
         mMediaPlayer.pause();
+        mServicePaused = true;
     }
 
     public void seek(int posn) {
@@ -207,7 +229,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void playNext() {
         Log.e("123", "playNext");
-        if (shuffle) {
+        if (mShuffle) {
             int newSong = mSongPosition;
             while (newSong == mSongPosition) {
                 newSong = rand.nextInt(mSongs.size());
@@ -222,13 +244,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void setShuffle() {
-        if (shuffle)
-            shuffle = false;
+        if (mShuffle)
+            mShuffle = false;
         else
-            shuffle = true;
+            mShuffle = true;
     }
 
     public void setOnMusicStateListener(OnMusicStateListener listener) {
         mOnMusicStateListener = listener;
+    }
+
+    private void registerHeadsetPlugReceiver() {
+        mHeadsetPlugReceiver = new HeadsetPlugReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.HEADSET_PLUG");
+        this.registerReceiver(mHeadsetPlugReceiver, filter);
+    }
+
+    private void unregisterReceiver() {
+        this.unregisterReceiver(mHeadsetPlugReceiver);
     }
 }

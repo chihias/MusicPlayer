@@ -32,11 +32,6 @@ public class ListFragment extends Fragment {
     public static final String PROVIDER_MEDIA_TITLE = "android.provider.MediaStore.Audio.Media.TITLE";
     public static final String PROVIDER_MEDIA_ID = "android.provider.MediaStore.Audio.Media._ID";
     public static final String PROVIDER_MEDIA_ARTIST = "android.provider.MediaStore.Audio.Media.ARTIST";
-
-    private Activity mActivity;
-    private ListView mSongView;
-    private OnPlaySongListener mOnPlaySongListener;
-
     public ArrayList<Song> mSongList;
 
     public interface OnPlaySongListener {
@@ -44,6 +39,10 @@ public class ListFragment extends Fragment {
 
         public void getSongList(ArrayList<Song> list);
     }
+
+    private Activity mActivity;
+    private ListView mSongView;
+    private OnPlaySongListener mOnPlaySongListener;
 
     @Override
     public void onAttach(Activity activity) {// mActivity­n¥ýinitialize
@@ -151,6 +150,5 @@ public class ListFragment extends Fragment {
     private void instanList() {
         mSongList = new ArrayList<Song>();
     }
-
 
 }

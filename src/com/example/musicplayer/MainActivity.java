@@ -6,21 +6,27 @@ import java.util.ArrayList;
 import com.example.musicplayer.ListFragment.OnPlaySongListener;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothClass.Device.Major;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnPlaySongListener {
 
     private ControllerFragment mControllerFragment;
     private ListFragment mListFragment;
     private View mControlFragContainer;
-    private HeadsetPlugReceiver mHeadsetPlugReceiver;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +49,18 @@ public class MainActivity extends Activity implements OnPlaySongListener {
             }
             addControllerFragment();
         }
-       // registerHeadsetPlugReceiver();
+        if (isServiceRunning(MusicService.class)) {
+            setControlFragContainerVisiblity();
+        }
+        
+        Log.e("123", "activity on create");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -73,9 +90,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         // Toast.makeText(this,
         // Boolean.toString(this.getControlFragContainerVisibility()),
         // Toast.LENGTH_LONG).show();
-        if (this.getControlFragContainerVisibility()) {
-
-        } else {
+        if (!this.getControlFragContainerVisibility()) {
             setControlFragContainerVisiblity();
         }
         mControllerFragment.onPlaySong(view);
@@ -90,11 +105,11 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregisterReceiver();
-        //mControllerFragment.stopMusicService();
-        //stopService(new Intent(this,MusicService.class));
+        // mControllerFragment.stopMusicService();
+        // stopService(new Intent(this,MusicService.class));
+        Log.e("123", "activity on destroy");
     }
-    
+
     private void addControllerFragment() {
         FragmentManager fragMng = getFragmentManager();
         FragmentTransaction fragTran = fragMng.beginTransaction();
@@ -110,22 +125,18 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         fragTran.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragTran.commit();
     }
-/*
-    private void registerHeadsetPlugReceiver(){
-        mHeadsetPlugReceiver = new HeadsetPlugReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.intent.action.HEADSET_PLUG");
-        registerReceiver();
+
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void registerReceiver(){
-        
-    }
-
-    private void unregisterReceiver(){
-        this.unregisterReceiver(mHeadsetPlugReceiver);
-    }
-*/
     public boolean getControlFragContainerVisibility() {
         if (mControlFragContainer.getVisibility() == View.VISIBLE)
             return true;
@@ -136,6 +147,11 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     public void setControlFragContainerVisiblity() {
         mControlFragContainer.setVisibility(View.VISIBLE);
     }
-    
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Toast.makeText(this, "From receiver", Toast.LENGTH_SHORT).show();
+    }
 
 }
