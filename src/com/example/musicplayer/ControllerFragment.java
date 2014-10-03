@@ -4,6 +4,7 @@ package com.example.musicplayer;
 import java.util.ArrayList;
 
 import com.example.musicplayer.MusicService.MusicBinder;
+import com.example.musicplayer.MusicService.OnHeadsetPlugOutListener;
 import com.example.musicplayer.MusicService.OnMusicStateListener;
 
 import android.app.Activity;
@@ -12,11 +13,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,7 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.MediaController.MediaPlayerControl;
+
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +64,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             Log.e("123", "onServiceConnected");
             MusicBinder binder = (MusicBinder) service;
             mMusicSrv = binder.getService();
+
             mMusicSrv.setOnMusicStateListener(new OnMusicStateListener() {
 
                 @Override
@@ -73,6 +73,16 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
                 }
 
             });
+            mMusicSrv.setOnHeadsetPlugOutListener(new OnHeadsetPlugOutListener() {
+
+                @Override
+                public void updateControllerViewAfterPlugOutHeadset() {
+                    Log.d("123", "Plug out and refresh");
+                    updateControllerView();
+                }
+
+            });
+
             mMusicSrv.setList(mSongList);
             mMusicBound = true;
             if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
@@ -168,6 +178,8 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         super.onDestroy();
         mMusicSrv.checkStopself();
         // mActivity.stopService(mPlayIntent); //why?
+        mMusicSrv.setmOnHeadsetPlugOutListenerNull();
+        mMusicSrv.setmOnMusicStateListenerNull();
         Toast.makeText(mActivity, "onDestroy", Toast.LENGTH_SHORT).show();
     }
 
@@ -202,6 +214,14 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     }
 
+    // Thumb Moving Event
+    private void seekbarChangeByThumbMovingEvent(View v) {
+        if (mMusicSrv.isPng()) {
+            mMusicSrv.seek(mSeekBar.getProgress());
+
+        }
+    }
+
     public void updateControllerView() {
         Log.e("123", "updateControllerView");
         mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
@@ -210,32 +230,40 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         // Log.e("123", "Song duration = " + mMusicSrv.getDur());
         // Log.e("123", "dur= " + String.valueOf(mMusicSrv.getDur()));
 
-//        mCurrentProcess = mMusicSrv.getPosn();
-//        mMaxProcess = mMusicSrv.getDur();
-//        mHandler = new Handler() {
-//
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//
-//                switch (msg.what) {
-//                    case PRO:
-//                        if (mCurrentProcess < mMaxProcess) {
-//                            mCurrentProcess += 1;
-//                            mSeekBar.incrementProgressBy(1);
-//                            mHandler.sendEmptyMessageDelayed(PRO, 60);
-//                        }
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//
-//        };
-//        mCurrentProcess = mCurrentProcess > 0 ? mCurrentProcess : 0;
-//        mSeekBar.setMax(mMaxProcess);
-//        mSeekBar.setProgress(mCurrentProcess);
-//        mHandler.sendEmptyMessage(PRO);
+        // mCurrentProcess = mMusicSrv.getPosn();
+        // mMaxProcess = mMusicSrv.getDur();
+        // mHandler = new Handler() {
+        //
+        // @Override
+        // public void handleMessage(Message msg) {
+        // super.handleMessage(msg);
+        //
+        // switch (msg.what) {
+        // case PRO:
+        // if (mCurrentProcess < mMaxProcess) {
+        // // mCurrentProcess += 1;
+        // mCurrentProcess = mMusicSrv.getPosn();
+        // mSeekBar.incrementProgressBy(6000000 / mMaxProcess);
+        // mHandler.sendEmptyMessageDelayed(PRO, 60);
+        // }
+        // break;
+        // default:
+        // break;
+        // }
+        // }
+        //
+        // };
+        // mCurrentProcess = mCurrentProcess > 0 ? mCurrentProcess : 0;
+        // mSeekBar.setMax(mMaxProcess);
+        // mSeekBar.setProgress(mCurrentProcess);
+        // mSeekBar.setOnTouchListener(new OnTouchListener() {
+        // @Override
+        // public boolean onTouch(View v, MotionEvent event) {
+        // seekbarChangeByThumbMovingEvent(v);
+        // return false;
+        // }
+        // });
+        // mHandler.sendEmptyMessage(PRO);
 
         mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
         if (mMusicSrv.isPaused()) {

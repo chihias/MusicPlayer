@@ -27,6 +27,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         public void onMusicPrepareCompleteListener();
     }
 
+    public interface OnHeadsetPlugOutListener {
+        public void updateControllerViewAfterPlugOutHeadset();
+    }
+
     public static final String ACTION_PLAY_MUSIC = "com.example.musicplayer.ACTION_PLAY_MUSIC";
     public static final String ACTION_PAUSE_MUSIC = "com.example.musicplayer.ACTION_PAUSE_MUSIC";
     public static final String ACTION_STOP_MUSIC = "com.example.musicplayer.ACTION_STOP_MUSIC";
@@ -44,6 +48,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private Random rand;
 
     private OnMusicStateListener mOnMusicStateListener;
+    private OnHeadsetPlugOutListener mOnHeadsetPlugOutListener;
+
     private HeadsetPlugReceiver mHeadsetPlugReceiver;
 
     @Override
@@ -105,7 +111,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("123", "onStartCommand");
-        if("refresh_ui".equals(intent.getAction())) {
+        if ("refresh_ui".equals(intent.getAction())) {
+            if (mOnHeadsetPlugOutListener != null) {
+                mOnHeadsetPlugOutListener.updateControllerViewAfterPlugOutHeadset();
+            }
             Log.e("123", "Refresh UI");
         }
         // if (intent != null) {
@@ -145,7 +154,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mp) {
         Log.e("123", "onPrepared");
         mp.start();
-        mOnMusicStateListener.onMusicPrepareCompleteListener();
+        if (mOnMusicStateListener != null) {
+            mOnMusicStateListener.onMusicPrepareCompleteListener();
+        }
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
@@ -252,6 +263,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void setOnMusicStateListener(OnMusicStateListener listener) {
         mOnMusicStateListener = listener;
+    }
+
+    public void setOnHeadsetPlugOutListener(OnHeadsetPlugOutListener listener) {
+        mOnHeadsetPlugOutListener = listener;
+    }
+
+    public void setmOnHeadsetPlugOutListenerNull() {
+        mOnHeadsetPlugOutListener = null;
+    }
+
+    public void setmOnMusicStateListenerNull() {
+        mOnMusicStateListener = null;
     }
 
     private void registerHeadsetPlugReceiver() {

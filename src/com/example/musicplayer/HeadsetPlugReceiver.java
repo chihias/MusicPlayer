@@ -1,6 +1,8 @@
 
 package com.example.musicplayer;
 
+import java.util.ArrayList;
+
 import com.example.musicplayer.MusicService.MusicBinder;
 
 import android.content.BroadcastReceiver;
@@ -8,10 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 
 public class HeadsetPlugReceiver extends BroadcastReceiver {
-
-    private MusicService mMusicService;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,4 +41,5 @@ public class HeadsetPlugReceiver extends BroadcastReceiver {
             }
         }
     }
+
 }
