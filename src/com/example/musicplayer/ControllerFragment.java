@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.example.musicplayer.MusicService.MusicBinder;
 import com.example.musicplayer.MusicService.OnHeadsetPlugOutListener;
 import com.example.musicplayer.MusicService.OnMusicStateListener;
+import com.example.musicplayer.MusicService.OnNotificationBtnClickedListener;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -81,6 +82,19 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
                     updateControllerView();
                 }
 
+            });
+            mMusicSrv.setOnNotificationBtnClickedListener(new OnNotificationBtnClickedListener() {
+
+                @Override
+                public void updateControllerViewAfterPlayAndPauseBtnClicked() {
+                    Log.e("123", "notification playandpause button clicked");
+                    updateControllerView();
+                }
+
+                @Override
+                public void stopServiceAfterStopBtnClicked() {
+                    setMusicSrvEnd();
+                }
             });
 
             mMusicSrv.setList(mSongList);
@@ -180,6 +194,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         // mActivity.stopService(mPlayIntent); //why?
         mMusicSrv.setmOnHeadsetPlugOutListenerNull();
         mMusicSrv.setmOnMusicStateListenerNull();
+        mMusicSrv.setmOnNotificationBtnClickedListenerNull();
         Toast.makeText(mActivity, "onDestroy", Toast.LENGTH_SHORT).show();
     }
 
@@ -223,7 +238,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     }
 
     public void updateControllerView() {
-        Log.e("123", "updateControllerView");
+        // Log.e("123", "updateControllerView");
         mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
         mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
         // mSongDurationTextView.setText(mMusicSrv.getDur());

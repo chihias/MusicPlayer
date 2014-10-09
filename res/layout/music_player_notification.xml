@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/icon_container"
+        android:layout_width="65dp"
+        android:layout_height="65dp" >
+
+        <ImageView
+            android:id="@+id/notification_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/song_info_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/icon_container"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="7dp"
+        android:layout_toRightOf="@id/icon_container"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/notification_artist_title"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/noti_artist_txt"
+            android:textColor="#EEEEEE"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/notification_song_title"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/noti_song_title_txt"
+            android:textColor="#EEEEEE"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/icon_container"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/song_info_layout"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/notification_playandpause_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp" />
+
+        <ImageView
+            android:id="@+id/notification_stop_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/stopplaying" />
+    </LinearLayout>
+
+</RelativeLayout>

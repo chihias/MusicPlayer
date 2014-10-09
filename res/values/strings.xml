@@ -8,5 +8,7 @@
     <string name="welcome_to_player_fragment">player_fragment! </string>
     <string name="song_title_txt">Title </string>
     <string name="artist_txt">Artist </string>
+    <string name="noti_song_title_txt">Song </string>
+    <string name="noti_artist_txt">Artist </string>
 
 </resources>
