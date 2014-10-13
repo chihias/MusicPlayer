@@ -10,10 +10,8 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothClass.Device.Major;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,7 +24,6 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     private ControllerFragment mControllerFragment;
     private ListFragment mListFragment;
     private View mControlFragContainer;
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +49,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         if (isServiceRunning(MusicService.class)) {
             setControlFragContainerVisiblity();
         }
-        
+
         Log.e("123", "activity on create");
 
     }
@@ -103,6 +100,12 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Toast.makeText(this, "From receiver", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         // mControllerFragment.stopMusicService();
@@ -126,7 +129,6 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         fragTran.commit();
     }
 
-
     private boolean isServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -146,12 +148,6 @@ public class MainActivity extends Activity implements OnPlaySongListener {
 
     public void setControlFragContainerVisiblity() {
         mControlFragContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Toast.makeText(this, "From receiver", Toast.LENGTH_SHORT).show();
     }
 
 }

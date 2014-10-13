@@ -4,20 +4,15 @@ package com.example.musicplayer;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.app.Activity;
 import android.app.Notification;
-import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.YuvImage;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -76,33 +71,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
             NotificationManager notificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//            Intent notIntent = new Intent(context, MainActivity.class);
-//            notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            PendingIntent pendInt = PendingIntent.getActivity(context, 0, notIntent,
-//                    PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            Intent playAndPauseBtnClicked = new Intent();
-//            playAndPauseBtnClicked.setAction(ACTION_PLAY_AND_PAUSE_MUSIC);
-//            PendingIntent pendInt_playAndPause = PendingIntent.getBroadcast(context, 0,
-//                    playAndPauseBtnClicked, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            Intent stopBtnClicked = new Intent();
-//            stopBtnClicked.setAction(ACTION_STOP_MUSIC);
-//            PendingIntent pendInt_stop = PendingIntent.getBroadcast(context, 0, stopBtnClicked,
-//                    PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            Notification.Builder builder = new Notification.Builder(context);
-//            builder.setSmallIcon(R.drawable.headset_blue).setContentIntent(pendInt);
-
-
-//            RemoteViews remoteviews = new RemoteViews(getPackageName(), R.layout.music_player_notification);
-//            remoteviews.setImageViewResource(R.id.notification_icon, R.drawable.headset_white);
-//            remoteviews.setTextViewText(R.id.notification_artist_title, mSongArtist);
-//            remoteviews.setTextViewText(R.id.notification_song_title, mSongTitle);
-//            remoteviews.setOnClickPendingIntent(R.id.notification_playandpause_button,
-//                    pendInt_playAndPause);
-//            remoteviews.setOnClickPendingIntent(R.id.notification_stop_button, pendInt_stop);
 
             if (ACTION_PLAY_AND_PAUSE_MUSIC.equals(intent.getAction())) {
                 if (isPng() == true) {
@@ -159,46 +127,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         registerBtnClickedReceiver();
     }
 
-    public void initMusicPlayer() {
-        mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setOnCompletionListener(this);
-        mMediaPlayer.setOnErrorListener(this);
-    }
-
-    public void setList(ArrayList<Song> theSongs) {
-        mSongs = theSongs;
-    }
-
-    public class MusicBinder extends Binder {
-        MusicService getService() {
-            return MusicService.this;
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.e("123", "onDestroy");
-        mMediaPlayer.release();
-        super.onDestroy();
-        unregisterReceiver();
-    }
-
-    public void stop() {
-        Log.e("123", "stop");
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-        }
-    }
-
-    public void checkStopself() {
-        Log.e("123", "checkStopself");
-        if (!mMediaPlayer.isPlaying() && !this.isPaused()) {
-            stopSelf();
-        }
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("123", "onStartCommand");
@@ -218,30 +146,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
-        Log.e("123", "onUnbind");
-        // mMediaPlayer.stop();
-        // mMediaPlayer.release();
-        return false;
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        Log.e("123", "onCompletion");
-        if (mMediaPlayer.getCurrentPosition() > 0) {
-            mp.reset();
-            playNext();
-        }
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e("123", "onError");
-        mp.reset();
-        return false;
-    }
-
-    @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e("123", "onPrepared");
         mp.start();
@@ -258,6 +162,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         // .setOngoing(true).setContentTitle("Playing").setContentText(mSongTitle);
         // Notification nof = builder.build();
         // startForeground(NOTIFY_ID, nof);
+
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
@@ -292,6 +197,38 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Log.e("123", "onCompletion");
+        if (mMediaPlayer.getCurrentPosition() > 0) {
+            mp.reset();
+            playNext();
+        }
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.e("123", "onUnbind");
+        // mMediaPlayer.stop();
+        // mMediaPlayer.release();
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("123", "onDestroy");
+        mMediaPlayer.release();
+        super.onDestroy();
+        unregisterReceiver();
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.e("123", "onError");
+        mp.reset();
+        return false;
+    }
+
     public void setSong(int songIndex) {
         Log.e("123", "setSong");
         mSongPosition = songIndex;
@@ -314,6 +251,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         mServicePaused = false;
         mMediaPlayer.prepareAsync();
+    }
+
+    public void initMusicPlayer() {
+        mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+    }
+
+    public void setList(ArrayList<Song> theSongs) {
+        mSongs = theSongs;
+    }
+
+    public class MusicBinder extends Binder {
+        MusicService getService() {
+            return MusicService.this;
+        }
     }
 
     public String getCurrentSongTitle() {
@@ -377,6 +332,20 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 mSongPosition = 0;
         }
         playSong();
+    }
+
+    public void stop() {
+        Log.e("123", "stop");
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.stop();
+        }
+    }
+
+    public void checkStopself() {
+        Log.e("123", "checkStopself");
+        if (!mMediaPlayer.isPlaying() && !this.isPaused()) {
+            stopSelf();
+        }
     }
 
     public void setShuffle() {

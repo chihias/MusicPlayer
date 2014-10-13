@@ -17,15 +17,19 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,16 +46,15 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private TextView mSongArtistTextView;
     private TextView mSongDurationTextView;
     private SeekBar mSeekBar;
+    private Utilities mUtils;
 
     private Handler mHandler;
-    private int mCurrentProcess;
-    private int mMaxProcess;
+    private long mCurrentProcess;
+    private long mMaxProcess;
     private final int PRO = 1;
 
     // private Button mStopButton;
     private MusicService mMusicSrv = null;
-    private boolean mMusicBound = false;
-    private boolean mPlaybackPaused = false;
     private Intent mPlayIntent;
     private ArrayList<Song> mSongList;
 
@@ -98,17 +101,29 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             });
 
             mMusicSrv.setList(mSongList);
-            mMusicBound = true;
             if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
                 updateControllerView();
             }
+
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mMusicBound = false;
             // mMusicSrv = null;
             // mActivity.stopService(mPlayIntent);
+        }
+    };
+
+    private Runnable mUpdateSeekbarTask = new Runnable() {
+
+        @Override
+        public void run() {
+            mMaxProcess = mMusicSrv.getDur();
+            mCurrentProcess = mMusicSrv.getPosn();
+            mSongDurationTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getDur()));
+            int progress = (int) mUtils.getProgressPercentage(mCurrentProcess, mMaxProcess);
+            mSeekBar.setProgress(progress);
+            mHandler.postDelayed(this, 30);
         }
     };
 
@@ -206,6 +221,8 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     private void initialize() {
         mActivity = getActivity();
+        mUtils = new Utilities();
+        mHandler = new Handler();
         setupViewComponent();
         initialView();
     }
@@ -226,59 +243,41 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mPlayandPauseButton.setOnClickListener(this);
         mPrevButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
+        mSeekBar.setProgress(0);
 
-    }
-
-    // Thumb Moving Event
-    private void seekbarChangeByThumbMovingEvent(View v) {
-        if (mMusicSrv.isPng()) {
-            mMusicSrv.seek(mSeekBar.getProgress());
-
-        }
     }
 
     public void updateControllerView() {
         // Log.e("123", "updateControllerView");
         mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
         mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
-        // mSongDurationTextView.setText(mMusicSrv.getDur());
-        // Log.e("123", "Song duration = " + mMusicSrv.getDur());
-        // Log.e("123", "dur= " + String.valueOf(mMusicSrv.getDur()));
 
-        // mCurrentProcess = mMusicSrv.getPosn();
-        // mMaxProcess = mMusicSrv.getDur();
-        // mHandler = new Handler() {
-        //
-        // @Override
-        // public void handleMessage(Message msg) {
-        // super.handleMessage(msg);
-        //
-        // switch (msg.what) {
-        // case PRO:
-        // if (mCurrentProcess < mMaxProcess) {
-        // // mCurrentProcess += 1;
-        // mCurrentProcess = mMusicSrv.getPosn();
-        // mSeekBar.incrementProgressBy(6000000 / mMaxProcess);
-        // mHandler.sendEmptyMessageDelayed(PRO, 60);
-        // }
-        // break;
-        // default:
-        // break;
-        // }
-        // }
-        //
-        // };
-        // mCurrentProcess = mCurrentProcess > 0 ? mCurrentProcess : 0;
-        // mSeekBar.setMax(mMaxProcess);
-        // mSeekBar.setProgress(mCurrentProcess);
-        // mSeekBar.setOnTouchListener(new OnTouchListener() {
-        // @Override
-        // public boolean onTouch(View v, MotionEvent event) {
-        // seekbarChangeByThumbMovingEvent(v);
-        // return false;
-        // }
-        // });
-        // mHandler.sendEmptyMessage(PRO);
+        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.e("123", "onStartTrackingTouch");
+                mHandler.removeCallbacks(mUpdateSeekbarTask);
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.e("123", "onStopTrackingTouch");
+                mHandler.removeCallbacks(mUpdateSeekbarTask);
+                mMaxProcess = mMusicSrv.getDur();
+                mMusicSrv.seek(mUtils.progressToTimer((int) seekBar.getProgress(),
+                        (int) mMaxProcess));
+                updateControllerView();
+            }
+        });
+        mHandler.postDelayed(mUpdateSeekbarTask, 30);
 
         mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
         if (mMusicSrv.isPaused()) {
