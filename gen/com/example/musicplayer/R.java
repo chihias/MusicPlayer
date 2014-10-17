@@ -45,18 +45,19 @@ public final class R {
         public static final int headset_blue=0x7f020003;
         public static final int headset_white=0x7f020004;
         public static final int ic_launcher=0x7f020005;
-        public static final int nextsong_btn=0x7f020006;
-        public static final int pause_btn=0x7f020007;
-        public static final int play=0x7f020008;
-        public static final int play_btn=0x7f020009;
-        public static final int prevsong_btn=0x7f02000a;
-        public static final int rand=0x7f02000b;
-        public static final int stopplaying=0x7f02000c;
+        public static final int music_player_icon=0x7f020006;
+        public static final int nextsong_btn=0x7f020007;
+        public static final int no_album_image=0x7f020008;
+        public static final int pause_btn=0x7f020009;
+        public static final int play=0x7f02000a;
+        public static final int play_btn=0x7f02000b;
+        public static final int prevsong_btn=0x7f02000c;
+        public static final int rand=0x7f02000d;
+        public static final int stopplaying=0x7f02000e;
     }
     public static final class id {
-        public static final int action_end=0x7f080019;
-        public static final int action_settings=0x7f08001a;
-        public static final int action_shuffle=0x7f080018;
+        public static final int action_end=0x7f080018;
+        public static final int album_image=0x7f08000a;
         public static final int button_layout=0x7f080013;
         public static final int button_nextsong=0x7f080005;
         public static final int button_play_and_pause=0x7f080004;
@@ -65,7 +66,6 @@ public final class R {
         public static final int controller_fragment_container=0x7f080001;
         public static final int custom_layout=0x7f08000d;
         public static final int icon_container=0x7f08000e;
-        public static final int imageView1=0x7f08000a;
         public static final int list_frag_layout=0x7f08000b;
         public static final int list_fragment_container=0x7f080000;
         public static final int notification_artist_title=0x7f080011;

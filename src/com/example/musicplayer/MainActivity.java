@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
             setControlFragContainerVisiblity();
         }
 
-        Log.e("123", "activity on create");
+        Log.i("123", "activity on create");
 
     }
 
@@ -70,9 +70,10 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            /*
             case R.id.action_shuffle:
                 mControllerFragment.setMusicSrvShuffle();
-                break;
+                break;*/
             case R.id.action_end:
                 mControllerFragment.setMusicSrvEnd();
                 break;
