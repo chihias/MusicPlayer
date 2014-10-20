@@ -13,7 +13,6 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ public class ListFragment extends Fragment {
     public static final String PROVIDER_MEDIA_TITLE = "android.provider.MediaStore.Audio.Media.TITLE";
     public static final String PROVIDER_MEDIA_ID = "android.provider.MediaStore.Audio.Media._ID";
     public static final String PROVIDER_MEDIA_ARTIST = "android.provider.MediaStore.Audio.Media.ARTIST";
-    public static final String PROVIDER_MEDIA_DATA = "android.provider.MediaStore.Audio.Media.DATA";
     public ArrayList<Song> mSongList;
 
     public interface OnPlaySongListener {
@@ -120,29 +118,21 @@ public class ListFragment extends Fragment {
     // a helper method
     public void getSongList() {
         ContentResolver musicResolver = mActivity.getContentResolver();
-        Uri musicExternalUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicExternalUri, null, null, null, null);
+        Uri musicInternalUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(musicInternalUri, null, null, null, null);
         // Check data is valid or not
-        try{
-            if (musicCursor != null && musicCursor.moveToFirst()) {
-                // get data from columns
-                int titleColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_TITLE);
-                int idColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_ID);
-                int artistColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_ARTIST);
-                //int dataColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_DATA);
-
-                // add songs to list
-                do {
-                    long thisId = musicCursor.getLong(idColumn);
-                    String thisTitle = musicCursor.getString(titleColumn);
-                    String thisArtist = musicCursor.getString(artistColumn);
-                    //String thisPath = musicCursor.getString(dataColumn);
-                    //Log.i("123","Path" + thisPath);
-                    mSongList.add(new Song(thisId, thisTitle, thisArtist));
-                } while (musicCursor.moveToNext());
-            }
-        }finally{
-            musicCursor.close();
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            // get data from columns
+            int titleColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_TITLE);
+            int idColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_ID);
+            int artistColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_ARTIST);
+            // add songs to list
+            do {
+                long thisId = musicCursor.getLong(idColumn);
+                String thisTitle = musicCursor.getString(titleColumn);
+                String thisArtist = musicCursor.getString(artistColumn);
+                mSongList.add(new Song(thisId, thisTitle, thisArtist));
+            } while (musicCursor.moveToNext());
         }
     }
 

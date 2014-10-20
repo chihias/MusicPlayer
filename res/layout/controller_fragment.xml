@@ -74,7 +74,7 @@
         android:textSize="10sp" />
 
     <ImageView
-        android:id="@+id/album_image"
+        android:id="@+id/imageView1"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_alignLeft="@id/seekBar_songProcess"
