@@ -53,6 +53,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final int NOTIFY_ID = 1;
     private boolean mShuffle = false;
     private boolean mServicePaused = false;
+    private boolean mServiceRunning = true;
     private Random rand;
 
     private RemoteViews mContentView;
@@ -92,6 +93,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
                 /* unbind Service */
                 if (mOnNotificationBtnClickedListener != null) {
+                    Log.d("123", "mOnNotificationBtnClickedListener != null");
                     mOnNotificationBtnClickedListener.stopServiceAfterStopBtnClicked();
                 }
                 Log.e("123", "stop");
@@ -128,7 +130,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("123", "onStartCommand");
-        if ("refresh_ui".equals(intent.getAction())) {
+        if (intent != null && "refresh_ui".equals(intent.getAction())) {
             if (mOnHeadsetPlugOutListener != null) {
                 if (isPng() || isPaused()) { // if user just start service
                                              // without selecting songs, the
@@ -140,13 +142,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             }
 
         }
+        
         // if (intent != null) {
         // int intPauseIntent = intent.getIntExtra("pauseIntent", 0);
         // if (intPauseIntent == 1) {
         // this.pausePlayer();
         // }
         // }
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -179,7 +182,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         Intent stopBtnClicked = new Intent();
         stopBtnClicked.setAction(ACTION_STOP_MUSIC);
-        PendingIntent pendInt_stop = PendingIntent.getBroadcast(this, 0, stopBtnClicked,
+        PendingIntent pendIntStop = PendingIntent.getBroadcast(this, 0, stopBtnClicked,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         mContentView = new RemoteViews(getPackageName(), R.layout.music_player_notification);
@@ -193,7 +196,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mContentView.setTextViewText(R.id.notification_song_title, mSongTitle);
         mContentView.setOnClickPendingIntent(R.id.notification_playandpause_button,
                 pendInt_playAndPause);
-        mContentView.setOnClickPendingIntent(R.id.notification_stop_button, pendInt_stop);
+        mContentView.setOnClickPendingIntent(R.id.notification_stop_button, pendIntStop);
         mContentView.setImageViewResource(R.id.notification_playandpause_button,
                 R.drawable.pause_btn);
         Notification nof = mBuilder.build();

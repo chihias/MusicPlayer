@@ -68,6 +68,8 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private Intent mPlayIntent;
     private ArrayList<Song> mSongList;
 
+    private boolean mMusicSrvIsRunning = false;
+
     private int mCurrentSongId;
     private ServiceConnection mMusicConnection = new ServiceConnection() {
 
@@ -123,7 +125,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            // mMusicSrv = null;
+            mMusicSrv = null;
             // mActivity.stopService(mPlayIntent);
         }
     };
@@ -207,7 +209,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         Log.i("123", "ControllerFragment: onStart");
         mPlayIntent = new Intent(mActivity, MusicService.class);
         mActivity.bindService(mPlayIntent, mMusicConnection, Context.BIND_AUTO_CREATE);
-        Toast.makeText(mActivity, "onStart", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mActivity, "onStart", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -228,7 +230,11 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mMusicSrv.setmOnHeadsetPlugOutListenerNull();
         mMusicSrv.setmOnMusicStateListenerNull();
         mMusicSrv.setmOnNotificationBtnClickedListenerNull();
-        Toast.makeText(mActivity, "onDestroy", Toast.LENGTH_SHORT).show();
+        
+        if (mMusicSrv!=null)         mActivity.unbindService(mMusicConnection);
+        
+        Log.d("123","ControllerFrag onDestroy");
+        //Toast.makeText(mActivity, "onDestroy", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -395,6 +401,22 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
       return bitmap;
   }
 
+    public void checkServiceRunning() {
+        if (mMusicSrv == null) {
+            mMusicSrvIsRunning = false;
+            return;
+        } else {
+            if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
+                mMusicSrvIsRunning = true;
+            }
+        }
+
+    }
+
+  public boolean srvIsRunning(){
+      return mMusicSrvIsRunning;
+  }
+
   private void setAlbumImage() {
       long id = mMusicSrv.getCurrentSongId();
       Uri musicExternalUri = ContentUris.withAppendedId(MUSIC_URI, id);
@@ -405,5 +427,6 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
           mAlbumImage.setImageResource(R.drawable.no_album_image);
       }
   }
+
 
 }

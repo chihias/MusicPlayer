@@ -83,7 +83,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(mActivity, "onCreate", Toast.LENGTH_LONG);
+        //Toast.makeText(mActivity, "onCreate", Toast.LENGTH_LONG);
     }
 
     @Override
@@ -100,19 +100,19 @@ public class ListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Toast.makeText(mActivity, "onPause", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mActivity, "onPause", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(mActivity, "onResume", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mActivity, "onResume", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Toast.makeText(mActivity, "onStop", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mActivity, "onStop", Toast.LENGTH_SHORT).show();
     }
 
     // a helper method

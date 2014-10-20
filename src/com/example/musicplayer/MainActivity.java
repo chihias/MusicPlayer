@@ -3,6 +3,7 @@ package com.example.musicplayer;
 import java.util.ArrayList;
 
 import com.example.musicplayer.ListFragment.OnPlaySongListener;
+import com.example.musicplayer.MusicService.MusicBinder;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -12,6 +13,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     private ControllerFragment mControllerFragment;
     private ListFragment mListFragment;
     private View mControlFragContainer;
+    private MusicService mMusicService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +48,23 @@ public class MainActivity extends Activity implements OnPlaySongListener {
             }
             addControllerFragment();
         }
+        /* There is a bug on certain devices*/
         if (isServiceRunning(MusicService.class)) {
             setControlFragContainerVisiblity();
         }
+        /*
+        if(mControllerFragment != null){
+            mControllerFragment.checkServiceRunning();
+            Log.d("123","mControllerFragment.srvIsRunning() = "+ mControllerFragment.srvIsRunning());
+            if(mControllerFragment.srvIsRunning()){
+                setControlFragContainerVisiblity();
+            }
+        }else{
+            Log.e("123", "mControllerFragment is null");
+        }*/
+        
 
-        Log.e("123", "activity on create");
+        Log.d("123", "activity on create");
 
     }
 
@@ -102,7 +117,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Toast.makeText(this, "From receiver", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "From receiver", Toast.LENGTH_SHORT).show();
     }
 
     @Override
