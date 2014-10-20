@@ -34,17 +34,19 @@
 
     <TextView
         android:id="@+id/textview_artist"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button_prevsong"
         android:layout_alignLeft="@+id/textview_songtitle"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:text="@string/artist_txt"
         android:textColor="#EEEEEE"
         android:textSize="@dimen/artist_textsize" />
 
     <TextView
         android:id="@+id/textview_songtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/textview_artist"
         android:layout_marginLeft="65dp"
@@ -74,7 +76,7 @@
         android:textSize="10sp" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/album_image"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_alignLeft="@id/seekBar_songProcess"

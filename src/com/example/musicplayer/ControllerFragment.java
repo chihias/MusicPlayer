@@ -11,9 +11,15 @@ import com.example.musicplayer.MusicService.OnNotificationBtnClickedListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -28,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -36,17 +43,20 @@ import android.widget.Toast;
 public class ControllerFragment extends Fragment implements View.OnClickListener {
 
     public final static String ARG_POSITION = "position";
+    public static final Uri MUSIC_URI = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
     private Activity mActivity;
     private Button mPlayandPauseButton;
     private Button mPrevButton;
     private Button mNextButton;
     private FrameLayout mControllerFrag;
+    private ImageView mAlbumImage;
     private TextView mSongTitleTextView;
     private TextView mSongArtistTextView;
     private TextView mSongDurationTextView;
     private SeekBar mSeekBar;
     private Utilities mUtils;
+
 
     private Handler mHandler;
     private long mCurrentProcess;
@@ -59,24 +69,25 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private ArrayList<Song> mSongList;
 
     private int mCurrentSongId;
-    // private int mCurrentPosition = -1;
-    private final String LOG_TAG = "music player demo";
     private ServiceConnection mMusicConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.e("123", "onServiceConnected");
+            Log.i("123", "onServiceConnected");
             MusicBinder binder = (MusicBinder) service;
             mMusicSrv = binder.getService();
 
+            /* Music Service Prepared */
             mMusicSrv.setOnMusicStateListener(new OnMusicStateListener() {
 
                 @Override
                 public void onMusicPrepareCompleteListener() {
+                    Log.d("123", "MusicSrvPrepared");
                     updateControllerView();
                 }
 
             });
+            /* Headset Plug Out */
             mMusicSrv.setOnHeadsetPlugOutListener(new OnHeadsetPlugOutListener() {
 
                 @Override
@@ -86,11 +97,12 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
                 }
 
             });
+            /* Notification Btn Clicked */
             mMusicSrv.setOnNotificationBtnClickedListener(new OnNotificationBtnClickedListener() {
 
                 @Override
                 public void updateControllerViewAfterPlayAndPauseBtnClicked() {
-                    Log.e("123", "notification playandpause button clicked");
+                    Log.i("123", "notification playandpause button clicked");
                     updateControllerView();
                 }
 
@@ -101,6 +113,8 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             });
 
             mMusicSrv.setList(mSongList);
+
+            /* End Activity and Start Activity Again */
             if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
                 updateControllerView();
             }
@@ -118,12 +132,13 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void run() {
+          //Log.d("123", "mUpdateSeekbarTask");
             mMaxProcess = mMusicSrv.getDur();
             mCurrentProcess = mMusicSrv.getPosn();
             mSongDurationTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getDur()));
             int progress = (int) mUtils.getProgressPercentage(mCurrentProcess, mMaxProcess);
             mSeekBar.setProgress(progress);
-            mHandler.postDelayed(this, 30);
+            mHandler.postDelayed(this, 1000);
         }
     };
 
@@ -150,12 +165,12 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             case R.id.button_play_and_pause:
 
                 if (mMusicSrv.isPng()) {
-                    Log.e("123", "is paused");
+                    Log.i("123", "ControllerFragment: is paused");
                     mMusicSrv.pausePlayer();
                     mPlayandPauseButton.setBackgroundResource(R.drawable.play_btn);
                     break;
                 } else {
-                    Log.e("123", "is playing");
+                    Log.i("123", "ControllerFragment: is playing");
                     mMusicSrv.goPlay();
                     mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
                     break;
@@ -189,7 +204,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        Log.e("123", "onStart");
+        Log.i("123", "ControllerFragment: onStart");
         mPlayIntent = new Intent(mActivity, MusicService.class);
         mActivity.bindService(mPlayIntent, mMusicConnection, Context.BIND_AUTO_CREATE);
         Toast.makeText(mActivity, "onStart", Toast.LENGTH_SHORT).show();
@@ -197,7 +212,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onResume() {
-        Log.e("123", "onResume");
+        Log.i("123", "ControllerFragment: onResume");
         super.onResume();
 
     }
@@ -205,6 +220,9 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mHandler != null){
+            mHandler.removeCallbacks(mUpdateSeekbarTask);
+        }
         mMusicSrv.checkStopself();
         // mActivity.stopService(mPlayIntent); //why?
         mMusicSrv.setmOnHeadsetPlugOutListenerNull();
@@ -231,6 +249,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mPlayandPauseButton = (Button) getView().findViewById(R.id.button_play_and_pause);
         mPrevButton = (Button) getView().findViewById(R.id.button_prevsong);
         mNextButton = (Button) getView().findViewById(R.id.button_nextsong);
+        mAlbumImage = (ImageView) getView().findViewById(R.id.album_image);
         mSeekBar = (SeekBar) getView().findViewById(R.id.seekBar_songProcess);
         mSongTitleTextView = (TextView) getView().findViewById(R.id.textview_songtitle);
         mSongArtistTextView = (TextView) getView().findViewById(R.id.textview_artist);
@@ -244,27 +263,17 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mPrevButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
         mSeekBar.setProgress(0);
-
-    }
-
-    public void updateControllerView() {
-        // Log.e("123", "updateControllerView");
-        mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
-        mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
-
         mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 Log.e("123", "onStartTrackingTouch");
                 mHandler.removeCallbacks(mUpdateSeekbarTask);
-
             }
 
             @Override
@@ -274,10 +283,21 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
                 mMaxProcess = mMusicSrv.getDur();
                 mMusicSrv.seek(mUtils.progressToTimer((int) seekBar.getProgress(),
                         (int) mMaxProcess));
-                updateControllerView();
+                mHandler.post(mUpdateSeekbarTask);
             }
         });
-        mHandler.postDelayed(mUpdateSeekbarTask, 30);
+
+    }
+
+    public void updateControllerView() {
+        // Log.e("123", "updateControllerView");
+        mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
+        mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
+
+        //get embedded picture of each song and set album image
+        setAlbumImage();
+
+        mHandler.post(mUpdateSeekbarTask);
 
         mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
         if (mMusicSrv.isPaused()) {
@@ -290,9 +310,11 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mActivity.startService(mPlayIntent);
         // mActivity.bindService(mPlayIntent, mMusicConnection,
         // Context.BIND_AUTO_CREATE);
+        /* remove callback before click other songs */
+        mHandler.removeCallbacks(mUpdateSeekbarTask);
         mCurrentSongId = Integer.parseInt(view.getTag().toString());
         mMusicSrv.setSong(mCurrentSongId);
-        Log.e("123", "onPlaySong");
+        Log.i("123", "ControllerFragment: onPlaySong");
         mMusicSrv.playSong();
         // updateControllerView();
 
@@ -315,5 +337,73 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mActivity.stopService(mPlayIntent);
         mActivity.finish();
     }
+
+  public static String getSongPath(Context context, Uri uri) {
+
+      String filePath = null;
+      if (uri != null) {
+          Cursor cursor = null;
+          try {
+              String[] proj = {
+                  android.provider.MediaStore.Audio.Media.DATA
+              };
+              cursor = context.getContentResolver().query(uri, proj, null, null, null);
+              cursor.moveToFirst();
+              filePath = cursor.getString(0);
+
+              if (filePath == null || filePath.trim().isEmpty()) {
+                  filePath = uri.toString();
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
+              filePath = uri.toString();
+          } finally {
+              if (cursor != null) {
+                  cursor.close();
+              }
+          }
+      } else {
+          filePath = uri.toString();
+      }
+      Log.d("123", "path= " + filePath);
+      return filePath;
+  }
+
+  public static Bitmap getMusicAlbumArt(String filePath) {
+      Bitmap bitmap = null;
+      MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+      try {
+          retriever.setDataSource(filePath);
+          byte[] embeddedpic = retriever.getEmbeddedPicture();
+          if (embeddedpic != null) {
+              bitmap = BitmapFactory.decodeByteArray(embeddedpic, 0, embeddedpic.length);
+          }
+          if (bitmap == null) {
+              return null;
+          }
+      } catch (Exception ex) {
+          ex.printStackTrace();
+      } catch (NoSuchMethodError ex) {
+          ex.printStackTrace();
+      } finally {
+          try {
+              retriever.release();
+          } catch (RuntimeException ex) {
+              ex.printStackTrace();
+          }
+      }
+      return bitmap;
+  }
+
+  private void setAlbumImage() {
+      long id = mMusicSrv.getCurrentSongId();
+      Uri musicExternalUri = ContentUris.withAppendedId(MUSIC_URI, id);
+      Bitmap albumImage = getMusicAlbumArt(getSongPath(mActivity, musicExternalUri));
+      if (albumImage != null) {
+          mAlbumImage.setImageBitmap(albumImage);
+      } else {
+          mAlbumImage.setImageResource(R.drawable.no_album_image);
+      }
+  }
 
 }

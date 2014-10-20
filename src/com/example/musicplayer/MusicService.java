@@ -49,6 +49,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private final IBinder mMusicBind = new MusicBinder();
     private String mSongTitle = "";
     private String mSongArtist = "";
+    private long mSongId = 0;
     private static final int NOTIFY_ID = 1;
     private boolean mShuffle = false;
     private boolean mServicePaused = false;
@@ -69,36 +70,33 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            NotificationManager notificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-
             if (ACTION_PLAY_AND_PAUSE_MUSIC.equals(intent.getAction())) {
+
                 if (isPng() == true) {
-                    Log.e("123", "nof_isPng");
-                    Drawable d = context.getResources().getDrawable(R.drawable.play_btn);
-                    Log.e("123", "Drawable d " + (d == null ? "not" : "") + " exists");
-                    mContentView.setImageViewResource(R.id.notification_playandpause_button,
-                            R.drawable.play_btn);
                     Log.e("123", "pauseplayer");
+                    /* pause player which contains "Update Notification View" */
                     pausePlayer();
                 } else if (isPaused() == true) {
-                    Log.e("123", "nof_isPaused");
-                    mContentView.setImageViewResource(R.id.notification_playandpause_button,
-                            R.drawable.pause_btn);
                     Log.e("123", "goplay");
+                    /* go play music which contains "Update Notification View" */
                     goPlay();
                 }
+
+                /* Update Controller View */
                 if (mOnNotificationBtnClickedListener != null) {
                     mOnNotificationBtnClickedListener
                             .updateControllerViewAfterPlayAndPauseBtnClicked();
                 }
-                mBuilder.setContent(mContentView);
-                notificationManager.notify(NOTIFY_ID, mBuilder.build());
+
             } else if (ACTION_STOP_MUSIC.equals(intent.getAction())) {
+
+                /* unbind Service */
                 if (mOnNotificationBtnClickedListener != null) {
                     mOnNotificationBtnClickedListener.stopServiceAfterStopBtnClicked();
                 }
                 Log.e("123", "stop");
+
+                /* stop Service */
                 stopForeground(true);
                 stopSelf();
             }
@@ -132,9 +130,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Log.e("123", "onStartCommand");
         if ("refresh_ui".equals(intent.getAction())) {
             if (mOnHeadsetPlugOutListener != null) {
-                mOnHeadsetPlugOutListener.updateControllerViewAfterPlugOutHeadset();
+                if (isPng() || isPaused()) { // if user just start service
+                                             // without selecting songs, the
+                                             // controller view will not be
+                                             // updated.
+                    mOnHeadsetPlugOutListener.updateControllerViewAfterPlugOutHeadset();
+                    Log.e("123", "Refresh UI");
+                }
             }
-            Log.e("123", "Refresh UI");
+
         }
         // if (intent != null) {
         // int intPauseIntent = intent.getIntExtra("pauseIntent", 0);
@@ -239,6 +243,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Song playSong = mSongs.get(mSongPosition);
         mSongTitle = playSong.getTitle();
         mSongArtist = playSong.getArtist();
+        mSongId = playSong.getID();
         Log.e("123", "playSong,  position=" + mSongPosition + ", title = " + mSongTitle
                 + ", artist = " + mSongArtist);
         long currSong = playSong.getID();
@@ -280,6 +285,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return mSongArtist;
     }
 
+    public long getCurrentSongId() {
+        return mSongId;
+    }
+
     public int getPosn() {
         return mMediaPlayer.getCurrentPosition();
     }
@@ -297,6 +306,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void pausePlayer() {
+        updateNotificationView(this);
         mMediaPlayer.pause();
         mServicePaused = true;
     }
@@ -306,6 +316,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void goPlay() {
+        updateNotificationView(this);
         mMediaPlayer.start();
         mServicePaused = false;
     }
@@ -397,5 +408,23 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private void unregisterReceiver() {
         this.unregisterReceiver(mHeadsetPlugReceiver);
         this.unregisterReceiver(mBtnClickedReceiver);
+    }
+
+    private void updateNotificationView(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        if (isPng() == true) {
+            // Drawable d =
+            // context.getResources().getDrawable(R.drawable.play_btn);
+            // Log.e("123", "Drawable d " + (d == null ? "not" : "") +
+            // " exists");
+            mContentView.setImageViewResource(R.id.notification_playandpause_button,
+                    R.drawable.play_btn);
+        } else if (isPaused() == true) {
+            mContentView.setImageViewResource(R.id.notification_playandpause_button,
+                    R.drawable.pause_btn);
+        }
+        mBuilder.setContent(mContentView);
+        notificationManager.notify(NOTIFY_ID, mBuilder.build());
     }
 }

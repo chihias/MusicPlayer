@@ -1,4 +1,3 @@
-
 package com.example.musicplayer;
 
 import java.util.ArrayList;
@@ -70,9 +69,10 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            /*
             case R.id.action_shuffle:
                 mControllerFragment.setMusicSrvShuffle();
-                break;
+                break;*/
             case R.id.action_end:
                 mControllerFragment.setMusicSrvEnd();
                 break;
