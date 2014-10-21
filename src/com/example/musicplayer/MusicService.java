@@ -43,6 +43,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static final String ACTION_PLAY_AND_PAUSE_MUSIC = "com.example.musicplayer.ACTION_PLAY_AND_PAUSE_MUSIC";
     public static final String ACTION_STOP_MUSIC = "com.example.musicplayer.ACTION_STOP_MUSIC";
 
+    private static final String TAG = "MUSIC_PLAYER_MUSIC_SERVICE";
+
     private MediaPlayer mMediaPlayer;
     private ArrayList<Song> mSongs;
     private int mSongPosition;
@@ -74,11 +76,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             if (ACTION_PLAY_AND_PAUSE_MUSIC.equals(intent.getAction())) {
 
                 if (isPng() == true) {
-                    Log.e("123", "pauseplayer");
                     /* pause player which contains "Update Notification View" */
                     pausePlayer();
                 } else if (isPaused() == true) {
-                    Log.e("123", "goplay");
                     /* go play music which contains "Update Notification View" */
                     goPlay();
                 }
@@ -93,21 +93,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
                 /* unbind Service */
                 if (mOnNotificationBtnClickedListener != null) {
-                    Log.d("123", "mOnNotificationBtnClickedListener != null");
                     mOnNotificationBtnClickedListener.stopServiceAfterStopBtnClicked();
                 }
-                Log.e("123", "stop");
+                Log.d(TAG, "stop");
 
                 /* stop Service */
                 stopForeground(true);
                 stopSelf();
             }
-
-            // AppWidgetManager appWidgetManager =
-            // AppWidgetManager.getInstance(context);
-            // ComponentName componentName = new ComponentName(context,
-            // MusicService.class);
-            // appWidgetManager.updateAppWidget(componentName, remoteviews);
         }
     }
 
@@ -129,32 +122,31 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("123", "onStartCommand");
+        Log.i(TAG, "onStartCommand");
         if (intent != null && "refresh_ui".equals(intent.getAction())) {
             if (mOnHeadsetPlugOutListener != null) {
-                if (isPng() || isPaused()) { // if user just start service
-                                             // without selecting songs, the
-                                             // controller view will not be
-                                             // updated.
+                if (isPng() || isPaused()) { 
+                    /* if user just start service without selecting songs, the controller view will not be updated.*/
                     mOnHeadsetPlugOutListener.updateControllerViewAfterPlugOutHeadset();
-                    Log.e("123", "Refresh UI");
+                    Log.d(TAG, "Refresh UI");
                 }
             }
 
         }
-        
-        // if (intent != null) {
-        // int intPauseIntent = intent.getIntExtra("pauseIntent", 0);
-        // if (intPauseIntent == 1) {
-        // this.pausePlayer();
-        // }
-        // }
+
+//        if (intent != null) {
+//            int intPauseIntent = intent.getIntExtra("pauseIntent", 0);
+//            if (intPauseIntent == 1) {
+//                this.pausePlayer();
+//            }
+//        }
+
         return START_NOT_STICKY;
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.e("123", "onPrepared");
+        Log.i(TAG, "onPrepared");
         mp.start();
         if (mOnMusicStateListener != null) {
             mOnMusicStateListener.onMusicPrepareCompleteListener();
@@ -177,7 +169,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         Intent playAndPauseBtnClicked = new Intent();
         playAndPauseBtnClicked.setAction(ACTION_PLAY_AND_PAUSE_MUSIC);
-        PendingIntent pendInt_playAndPause = PendingIntent.getBroadcast(this, 0,
+        PendingIntent pendIntPlayAndPause = PendingIntent.getBroadcast(this, 0,
                 playAndPauseBtnClicked, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent stopBtnClicked = new Intent();
@@ -195,7 +187,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mContentView.setTextViewText(R.id.notification_artist_title, mSongArtist);
         mContentView.setTextViewText(R.id.notification_song_title, mSongTitle);
         mContentView.setOnClickPendingIntent(R.id.notification_playandpause_button,
-                pendInt_playAndPause);
+                pendIntPlayAndPause);
         mContentView.setOnClickPendingIntent(R.id.notification_stop_button, pendIntStop);
         mContentView.setImageViewResource(R.id.notification_playandpause_button,
                 R.drawable.pause_btn);
@@ -206,7 +198,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Log.e("123", "onCompletion");
+        Log.i(TAG, "onCompletion");
         if (mMediaPlayer.getCurrentPosition() > 0) {
             mp.reset();
             playNext();
@@ -215,7 +207,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.e("123", "onUnbind");
+        Log.i(TAG, "onUnbind");
         // mMediaPlayer.stop();
         // mMediaPlayer.release();
         return false;
@@ -223,7 +215,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onDestroy() {
-        Log.e("123", "onDestroy");
+        Log.i(TAG, "onDestroy");
         mMediaPlayer.release();
         super.onDestroy();
         unregisterReceiver();
@@ -231,13 +223,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e("123", "onError");
+        Log.e(TAG, "onError");
         mp.reset();
         return false;
     }
 
     public void setSong(int songIndex) {
-        Log.e("123", "setSong");
+        Log.i(TAG, "setSong");
         mSongPosition = songIndex;
     }
 
@@ -247,15 +239,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mSongTitle = playSong.getTitle();
         mSongArtist = playSong.getArtist();
         mSongId = playSong.getID();
-        Log.e("123", "playSong,  position=" + mSongPosition + ", title = " + mSongTitle
-                + ", artist = " + mSongArtist);
+        Log.i(TAG, "playSong, title = " + mSongTitle + ", artist = " + mSongArtist);
         long currSong = playSong.getID();
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
         try {
             mMediaPlayer.setDataSource(getApplicationContext(), trackUri);
         } catch (Exception e) {
-            Log.e("MUSIC SERVICE", "Error setting data source", e);
+            Log.e(TAG, "Error setting data source", e);
         }
         mServicePaused = false;
         mMediaPlayer.prepareAsync();
@@ -280,7 +271,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public String getCurrentSongTitle() {
-        Log.e("123", "getCurrentSongTitle=" + mSongTitle + ", mSongPosition=" + mSongPosition);
         return mSongTitle;
     }
 
@@ -325,7 +315,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playPrev() {
-        Log.e("123", "playPrev");
+        Log.i(TAG, "playPrev");
         mSongPosition--;
         if (mSongPosition < 0)
             mSongPosition = mSongs.size() - 1;
@@ -333,7 +323,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playNext() {
-        Log.e("123", "playNext");
+        Log.i(TAG, "playNext");
         if (mShuffle) {
             int newSong = mSongPosition;
             while (newSong == mSongPosition) {
@@ -349,14 +339,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void stop() {
-        Log.e("123", "stop");
+        Log.i(TAG, "stop");
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
         }
     }
 
     public void checkStopself() {
-        Log.e("123", "checkStopself");
+        Log.i(TAG, "checkStopself");
         if (!mMediaPlayer.isPlaying() && !this.isPaused()) {
             stopSelf();
         }
@@ -419,7 +409,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         if (isPng() == true) {
             // Drawable d =
             // context.getResources().getDrawable(R.drawable.play_btn);
-            // Log.e("123", "Drawable d " + (d == null ? "not" : "") +
+            // Log.d(TAG, "Drawable d " + (d == null ? "not" : "") +
             // " exists");
             mContentView.setImageViewResource(R.id.notification_playandpause_button,
                     R.drawable.play_btn);

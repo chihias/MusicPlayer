@@ -26,6 +26,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     private ListFragment mListFragment;
     private View mControlFragContainer;
     private MusicService mMusicService;
+    private static final String TAG = "MUSIC_PLAYER_MAIN_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +56,16 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         /*
         if(mControllerFragment != null){
             mControllerFragment.checkServiceRunning();
-            Log.d("123","mControllerFragment.srvIsRunning() = "+ mControllerFragment.srvIsRunning());
+            Log.d(TAG,"srvIsRunning() = "+ mControllerFragment.srvIsRunning());
             if(mControllerFragment.srvIsRunning()){
                 setControlFragContainerVisiblity();
             }
         }else{
-            Log.e("123", "mControllerFragment is null");
+            Log.e(TAG, "mControllerFragment is null");
         }*/
         
 
-        Log.d("123", "activity on create");
+        Log.i(TAG, " onCreate");
 
     }
 
@@ -125,7 +126,7 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         super.onDestroy();
         // mControllerFragment.stopMusicService();
         // stopService(new Intent(this,MusicService.class));
-        Log.e("123", "activity on destroy");
+        Log.i(TAG, "onDestroy");
     }
 
     private void addControllerFragment() {

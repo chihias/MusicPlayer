@@ -10,6 +10,12 @@ package com.example.musicplayer;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        public static final int dark_gray=0x7f040003;
+        public static final int dodger_blue=0x7f040000;
+        public static final int white=0x7f040001;
+        public static final int white_smoke=0x7f040002;
+    }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
@@ -20,22 +26,44 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
-        public static final int artist_textsize=0x7f050012;
-        public static final int nextsongbotton_marginleft=0x7f05000d;
-        public static final int nextsongbotton_size_height=0x7f050009;
-        public static final int nextsongbotton_size_width=0x7f050008;
-        public static final int pausebotton_size_height=0x7f050005;
-        public static final int pausebotton_size_width=0x7f050004;
-        public static final int pausesongbotton_marginleft=0x7f05000c;
+        public static final int con_frag_artist_text_view_width=0x7f050014;
+        public static final int con_frag_artist_textsize=0x7f050015;
+        public static final int con_frag_image_view_size_height=0x7f050027;
+        public static final int con_frag_image_view_size_margintop=0x7f050028;
+        public static final int con_frag_image_view_size_width=0x7f050026;
+        public static final int con_frag_seekbar_marginleft=0x7f050023;
+        public static final int con_frag_seekbar_marginright=0x7f050024;
+        public static final int con_frag_song_text_view_marginleft=0x7f050013;
+        public static final int con_frag_song_text_view_width=0x7f050011;
+        public static final int con_frag_songdur_textsize=0x7f050025;
+        public static final int con_frag_songtitle_textsize=0x7f050012;
+        public static final int list_frag_artist_textsize=0x7f050018;
+        public static final int list_frag_layout_padding=0x7f050016;
+        public static final int list_frag_songtitle_textsize=0x7f050017;
+        public static final int nextsongbotton_marginleft=0x7f05000e;
+        public static final int nextsongbotton_size_height=0x7f05000d;
+        public static final int nextsongbotton_size_width=0x7f05000c;
+        public static final int noti_artist_text_textsize=0x7f05001f;
+        public static final int noti_artist_text_view_width=0x7f05001e;
+        public static final int noti_image_container_size_height=0x7f05001a;
+        public static final int noti_image_container_size_width=0x7f050019;
+        public static final int noti_image_view_size_height=0x7f05001c;
+        public static final int noti_image_view_size_width=0x7f05001b;
+        public static final int noti_song_text_textsize=0x7f050022;
+        public static final int noti_song_text_view_margintop=0x7f050021;
+        public static final int noti_song_text_view_width=0x7f050020;
+        public static final int noti_text_container_marginleft=0x7f05001d;
+        public static final int pausebotton_size_height=0x7f050006;
+        public static final int pausebotton_size_width=0x7f050005;
+        public static final int pausesongbotton_marginleft=0x7f050007;
         public static final int playbotton_size_height=0x7f050003;
         public static final int playbotton_size_width=0x7f050002;
-        public static final int playsongbotton_marginleft=0x7f05000b;
+        public static final int playsongbotton_marginleft=0x7f050004;
         public static final int prevsongbotton_marginleft=0x7f05000a;
-        public static final int prevsongbotton_margintop=0x7f05000e;
-        public static final int prevsongbotton_size_height=0x7f050007;
-        public static final int prevsongbotton_size_width=0x7f050006;
+        public static final int prevsongbotton_margintop=0x7f05000b;
+        public static final int prevsongbotton_size_height=0x7f050009;
+        public static final int prevsongbotton_size_width=0x7f050008;
         public static final int processbar_margintop=0x7f050010;
-        public static final int songtitle_textsize=0x7f050011;
         public static final int textview_songtitle_margintop=0x7f05000f;
     }
     public static final class drawable {
@@ -90,9 +118,6 @@ public final class R {
     }
     public static final class menu {
         public static final int main=0x7f080000;
-    }
-    public static final class raw {
-        public static final int bighug=0x7f040000;
     }
     public static final class string {
         public static final int action_settings=0x7f060002;

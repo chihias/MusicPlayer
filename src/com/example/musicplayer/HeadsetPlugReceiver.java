@@ -11,12 +11,14 @@ import android.util.Log;
 
 public class HeadsetPlugReceiver extends BroadcastReceiver {
 
+    private static final String TAG = "MUSIC_PLAYER_HEADSET_PLUG_RECEIVER";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra("state")) {
             // Intent musicServicePauseIntent = new Intent(context,
             // MusicService.class);
-            if (intent.getIntExtra("state", 0) == 0) {
+            if (0 == intent.getIntExtra("state", 0)) {
                 // pause music service
                 // musicServicePauseIntent.putExtra("pauseIntent", 1);
                 // mMusicService.startService(musicServicePauseIntent);
@@ -32,9 +34,9 @@ public class HeadsetPlugReceiver extends BroadcastReceiver {
                 musicServicePauseIntent.setAction("refresh_ui");
                 context.startService(musicServicePauseIntent);
 
-                Log.e("123", "headset not connected");
-            } else if (intent.getIntExtra("state", 0) == 1) {
-                Log.e("123", "headset connected");
+                Log.i(TAG, "headset not connected");
+            } else if (1 == intent.getIntExtra("state", 0)) {
+                Log.i(TAG, "headset connected");
             }
         }
     }

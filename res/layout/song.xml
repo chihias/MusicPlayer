@@ -3,21 +3,21 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="@dimen/list_frag_layout_padding" >
 
     <TextView
         android:id="@+id/song_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FCFCFC"
-        android:textSize="20sp"
+        android:textColor="@color/white_smoke"
+        android:textSize="@dimen/list_frag_songtitle_textsize"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/song_artist"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FCFCFC"
-        android:textSize="16sp" />
+        android:textColor="@color/white_smoke"
+        android:textSize="@dimen/list_frag_artist_textsize" />
 
 </LinearLayout>

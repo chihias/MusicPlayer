@@ -69,13 +69,14 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private ArrayList<Song> mSongList;
 
     private boolean mMusicSrvIsRunning = false;
+    private static final String TAG = "MUSIC_PLAYER_CONTROLLER_FRAG";
 
     private int mCurrentSongId;
     private ServiceConnection mMusicConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.i("123", "onServiceConnected");
+            Log.i(TAG, "onServiceConnected");
             MusicBinder binder = (MusicBinder) service;
             mMusicSrv = binder.getService();
 
@@ -84,7 +85,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
                 @Override
                 public void onMusicPrepareCompleteListener() {
-                    Log.d("123", "MusicSrvPrepared");
+                    //Log.d(TAG, "MusicSrvPrepared");
                     updateControllerView();
                 }
 
@@ -94,7 +95,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
                 @Override
                 public void updateControllerViewAfterPlugOutHeadset() {
-                    Log.d("123", "Plug out and refresh");
+                    //Log.d(TAG, "Plug out and refresh");
                     updateControllerView();
                 }
 
@@ -104,7 +105,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
                 @Override
                 public void updateControllerViewAfterPlayAndPauseBtnClicked() {
-                    Log.i("123", "notification playandpause button clicked");
+                    //Log.d(TAG, "notification playandpause button clicked");
                     updateControllerView();
                 }
 
@@ -134,7 +135,6 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
         @Override
         public void run() {
-          //Log.d("123", "mUpdateSeekbarTask");
             mMaxProcess = mMusicSrv.getDur();
             mCurrentProcess = mMusicSrv.getPosn();
             mSongDurationTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getDur()));
@@ -167,12 +167,10 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             case R.id.button_play_and_pause:
 
                 if (mMusicSrv.isPng()) {
-                    Log.i("123", "ControllerFragment: is paused");
                     mMusicSrv.pausePlayer();
                     mPlayandPauseButton.setBackgroundResource(R.drawable.play_btn);
                     break;
                 } else {
-                    Log.i("123", "ControllerFragment: is playing");
                     mMusicSrv.goPlay();
                     mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
                     break;
@@ -206,7 +204,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("123", "ControllerFragment: onStart");
+        Log.i(TAG, "onStart");
         mPlayIntent = new Intent(mActivity, MusicService.class);
         mActivity.bindService(mPlayIntent, mMusicConnection, Context.BIND_AUTO_CREATE);
         //Toast.makeText(mActivity, "onStart", Toast.LENGTH_SHORT).show();
@@ -214,7 +212,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onResume() {
-        Log.i("123", "ControllerFragment: onResume");
+        Log.i(TAG, "onResume");
         super.onResume();
 
     }
@@ -233,7 +231,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         
         if (mMusicSrv!=null)         mActivity.unbindService(mMusicConnection);
         
-        Log.d("123","ControllerFrag onDestroy");
+        Log.d(TAG,"onDestroy");
         //Toast.makeText(mActivity, "onDestroy", Toast.LENGTH_SHORT).show();
     }
 
@@ -278,13 +276,13 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                Log.e("123", "onStartTrackingTouch");
+                //Log.d(TAG, "onStartTrackingTouch");
                 mHandler.removeCallbacks(mUpdateSeekbarTask);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.e("123", "onStopTrackingTouch");
+                //Log.d(TAG, "onStopTrackingTouch");
                 mHandler.removeCallbacks(mUpdateSeekbarTask);
                 mMaxProcess = mMusicSrv.getDur();
                 mMusicSrv.seek(mUtils.progressToTimer((int) seekBar.getProgress(),
@@ -296,7 +294,6 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     }
 
     public void updateControllerView() {
-        // Log.e("123", "updateControllerView");
         mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
         mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
 
@@ -320,7 +317,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mHandler.removeCallbacks(mUpdateSeekbarTask);
         mCurrentSongId = Integer.parseInt(view.getTag().toString());
         mMusicSrv.setSong(mCurrentSongId);
-        Log.i("123", "ControllerFragment: onPlaySong");
+        Log.i(TAG, "onPlaySong");
         mMusicSrv.playSong();
         // updateControllerView();
 
@@ -371,7 +368,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
       } else {
           filePath = uri.toString();
       }
-      Log.d("123", "path= " + filePath);
+      Log.d(TAG, "path= " + filePath);
       return filePath;
   }
 

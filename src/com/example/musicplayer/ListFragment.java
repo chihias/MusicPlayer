@@ -25,6 +25,9 @@ public class ListFragment extends Fragment {
     public static final String PROVIDER_MEDIA_TITLE = "android.provider.MediaStore.Audio.Media.TITLE";
     public static final String PROVIDER_MEDIA_ID = "android.provider.MediaStore.Audio.Media._ID";
     public static final String PROVIDER_MEDIA_ARTIST = "android.provider.MediaStore.Audio.Media.ARTIST";
+
+    private static final String TAG = "MUSIC_PLAYER_LIST_FRAG";
+
     public ArrayList<Song> mSongList;
 
     public interface OnPlaySongListener {
@@ -127,16 +130,12 @@ public class ListFragment extends Fragment {
                 int titleColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_TITLE);
                 int idColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_ID);
                 int artistColumn = musicCursor.getColumnIndex(PROVIDER_MEDIA_ARTIST);
-                // int dataColumn =
-                // musicCursor.getColumnIndex(PROVIDER_MEDIA_DATA);
 
                 // add songs to list
                 do {
                     long thisId = musicCursor.getLong(idColumn);
                     String thisTitle = musicCursor.getString(titleColumn);
                     String thisArtist = musicCursor.getString(artistColumn);
-                    // String thisPath = musicCursor.getString(dataColumn);
-                    // Log.i("123","Path" + thisPath);
                     mSongList.add(new Song(thisId, thisTitle, thisArtist));
                 } while (musicCursor.moveToNext());
             }

@@ -3,7 +3,7 @@
     android:id="@+id/controller_frag_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#272C32" >
+    android:background="@color/dark_gray" >
 
     <Button
         android:id="@+id/button_prevsong"
@@ -34,36 +34,36 @@
 
     <TextView
         android:id="@+id/textview_artist"
-        android:layout_width="100dp"
+        android:layout_width="@dimen/con_frag_artist_text_view_width"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button_prevsong"
         android:layout_alignLeft="@+id/textview_songtitle"
-        android:ellipsize="end"
-        android:singleLine="true"
         android:text="@string/artist_txt"
-        android:textColor="#EEEEEE"
-        android:textSize="@dimen/artist_textsize" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/con_frag_artist_textsize"
+        android:ellipsize="end"
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/textview_songtitle"
-        android:layout_width="220dp"
+        android:layout_width="@dimen/con_frag_song_text_view_width"
         android:layout_height="wrap_content"
         android:layout_below="@id/textview_artist"
-        android:layout_marginLeft="65dp"
+        android:layout_marginLeft="@dimen/con_frag_song_text_view_marginleft"
         android:layout_marginTop="@dimen/textview_songtitle_margintop"
-        android:ellipsize="end"
-        android:singleLine="true"
         android:text="@string/song_title_txt"
-        android:textColor="#EEEEEE"
-        android:textSize="@dimen/songtitle_textsize" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/con_frag_songtitle_textsize"
+        android:ellipsize="end"
+        android:singleLine="true" />
 
     <SeekBar
         android:id="@+id/seekBar_songProcess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="13dp"
+        android:layout_marginLeft="@dimen/con_frag_seekbar_marginleft"
+        android:layout_marginRight="@dimen/con_frag_seekbar_marginright"
         android:layout_marginTop="@dimen/processbar_margintop" />
 
     <TextView
@@ -72,15 +72,15 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/seekBar_songProcess"
         android:layout_alignBottom="@id/seekBar_songProcess"
-        android:textColor="#EEEEEE"
-        android:textSize="10sp" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/con_frag_songdur_textsize" />
 
     <ImageView
         android:id="@+id/album_image"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="@dimen/con_frag_image_view_size_width"
+        android:layout_height="@dimen/con_frag_image_view_size_height"
         android:layout_alignLeft="@id/seekBar_songProcess"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="@dimen/con_frag_image_view_size_margintop"
         android:src="@drawable/artist_view" />
 
 </RelativeLayout>

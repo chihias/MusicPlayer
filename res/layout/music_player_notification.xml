@@ -6,14 +6,15 @@
 
     <RelativeLayout
         android:id="@+id/icon_container"
-        android:layout_width="65dp"
-        android:layout_height="65dp" >
+        android:layout_width="@dimen/noti_image_container_size_width"
+        android:layout_height="@dimen/noti_image_container_size_height" >
 
         <ImageView
             android:id="@+id/notification_icon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/noti_image_view_size_width"
+            android:layout_height="@dimen/noti_image_view_size_height"
             android:layout_centerInParent="true" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -22,30 +23,31 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/icon_container"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="7dp"
+        android:layout_marginLeft="@dimen/noti_text_container_marginleft"
         android:layout_toRightOf="@id/icon_container"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/notification_artist_title"
-            android:layout_width="160dp"
+            android:layout_width="@dimen/noti_artist_text_view_width"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@string/noti_artist_txt"
-            android:textColor="#EEEEEE"
-            android:textSize="16sp" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/noti_artist_text_textsize" />
 
         <TextView
             android:id="@+id/notification_song_title"
-            android:layout_width="160dp"
+            android:layout_width="@dimen/noti_song_text_view_width"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/noti_song_text_view_margintop"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@string/noti_song_title_txt"
-            android:textColor="#EEEEEE"
-            android:textSize="14sp" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/noti_song_text_textsize" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -69,6 +71,7 @@
             android:layout_height="25dp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/stopplaying" />
+
     </LinearLayout>
 
 </RelativeLayout>
