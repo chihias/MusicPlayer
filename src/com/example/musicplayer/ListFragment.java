@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +28,7 @@ public class ListFragment extends Fragment {
 
     private static final String TAG = "MUSIC_PLAYER_LIST_FRAG";
 
+    public ControllerFragment mControllerFragment;
     public ArrayList<Song> mSongList;
 
     public interface OnPlaySongListener {
@@ -86,7 +87,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Toast.makeText(mActivity, "onCreate", Toast.LENGTH_LONG);
+        // Toast.makeText(mActivity, "onCreate", Toast.LENGTH_LONG);
     }
 
     @Override
@@ -103,25 +104,25 @@ public class ListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        //Toast.makeText(mActivity, "onPause", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(mActivity, "onPause", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //Toast.makeText(mActivity, "onResume", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(mActivity, "onResume", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //Toast.makeText(mActivity, "onStop", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(mActivity, "onStop", Toast.LENGTH_SHORT).show();
     }
 
     // a helper method
     public void getSongList() {
         ContentResolver musicResolver = mActivity.getContentResolver();
-        Uri musicExternalUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri musicExternalUri = mControllerFragment.MUSIC_URI;
         Cursor musicCursor = musicResolver.query(musicExternalUri, null, null, null, null);
         // Check data is valid or not
         try {
@@ -136,7 +137,11 @@ public class ListFragment extends Fragment {
                     long thisId = musicCursor.getLong(idColumn);
                     String thisTitle = musicCursor.getString(titleColumn);
                     String thisArtist = musicCursor.getString(artistColumn);
-                    mSongList.add(new Song(thisId, thisTitle, thisArtist));
+                    Uri thisSongUri = ContentUris.withAppendedId(musicExternalUri, thisId);
+                    String filePath = mControllerFragment.getSongPath(mActivity, thisSongUri);
+                    if (isMusicFile(filePath)){
+                        mSongList.add(new Song(thisId, thisTitle, thisArtist));
+                    }
                 } while (musicCursor.moveToNext());
             }
         } finally {
@@ -152,4 +157,11 @@ public class ListFragment extends Fragment {
         mSongList = new ArrayList<Song>();
     }
 
+    private boolean isMusicFile(String filePath) {
+        if (!TextUtils.isEmpty(filePath) && (filePath.endsWith("mp3") || filePath.endsWith("MP3"))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
