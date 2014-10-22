@@ -57,6 +57,7 @@
         android:ellipsize="end"
         android:singleLine="true" />
 
+
     <SeekBar
         android:id="@+id/seekBar_songProcess"
         android:layout_width="match_parent"
@@ -64,16 +65,27 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="@dimen/con_frag_seekbar_marginleft"
         android:layout_marginRight="@dimen/con_frag_seekbar_marginright"
-        android:layout_marginTop="@dimen/processbar_margintop" />
+        android:layout_marginTop="@dimen/processbar_margintop"
+        android:thumb="@drawable/custom_seekbar_thumb" />
+
 
     <TextView
         android:id="@+id/textview_songduration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/seekBar_songProcess"
-        android:layout_alignBottom="@id/seekBar_songProcess"
+        android:layout_marginTop="@dimen/con_frag_songdur_margintop"
         android:textColor="@color/white"
         android:textSize="@dimen/con_frag_songdur_textsize" />
+
+    <TextView
+        android:id="@+id/textview_songcurrentposition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/con_frag_songcurrentposition_marginleft"
+        android:layout_marginTop="@dimen/con_frag_songcurrentposition_margintop"
+        android:textColor="@color/white"
+        android:textSize="@dimen/con_frag_songcurrentposition_textsize" />
 
     <ImageView
         android:id="@+id/album_image"

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- thumb pressed -->
+    <item 
+        android:drawable="@drawable/seekbar_thumb_pressed"
+        android:state_pressed="true">
+    </item>
+
+    <!-- unfocused -->
+    <item android:state_focused="false"
+        android:state_pressed="false"
+        android:drawable="@drawable/seekbar_thumb">
+    </item>
+
+</selector>

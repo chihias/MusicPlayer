@@ -50,6 +50,11 @@
     <dimen name="con_frag_seekbar_marginleft">7dp</dimen>
     <dimen name="con_frag_seekbar_marginright">13dp</dimen>
     <dimen name="con_frag_songdur_textsize">10sp</dimen>
+    <dimen name="con_frag_songcurrentposition_textsize">10sp</dimen>
+    <dimen name="con_frag_songdur_margintop">32dp</dimen>
+    <dimen name="con_frag_songcurrentposition_margintop">32dp</dimen>
+    <dimen name="con_frag_songcurrentposition_marginleft">15dp</dimen>
+    
 
     <dimen name="con_frag_image_view_size_width">52dp</dimen>
     <dimen name="con_frag_image_view_size_height">52dp</dimen>

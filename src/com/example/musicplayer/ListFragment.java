@@ -73,8 +73,9 @@ public class ListFragment extends Fragment {
         mSongView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                mOnPlaySongListener.onSongSelected(arg1);
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                /* To-do:We should avoid of clicking a deleted file */
+                mOnPlaySongListener.onSongSelected(view);
             }
         });
     }
@@ -157,6 +158,7 @@ public class ListFragment extends Fragment {
         mSongList = new ArrayList<Song>();
     }
 
+    /* A mp3 file filter */
     private boolean isMusicFile(String filePath) {
         if (!TextUtils.isEmpty(filePath) && (filePath.endsWith("mp3") || filePath.endsWith("MP3"))) {
             return true;

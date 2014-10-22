@@ -54,6 +54,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private TextView mSongTitleTextView;
     private TextView mSongArtistTextView;
     private TextView mSongDurationTextView;
+    private TextView mSongCurPositionTextView;
     private SeekBar mSeekBar;
     private Utilities mUtils;
 
@@ -68,7 +69,6 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private Intent mPlayIntent;
     private ArrayList<Song> mSongList;
 
-    private boolean mMusicSrvIsRunning = false;
     private static final String TAG = "MUSIC_PLAYER_CONTROLLER_FRAG";
 
     private int mCurrentSongId;
@@ -138,6 +138,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             mMaxProcess = mMusicSrv.getDur();
             mCurrentProcess = mMusicSrv.getPosn();
             mSongDurationTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getDur()));
+            mSongCurPositionTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getPosn()));
             int progress = (int) mUtils.getProgressPercentage(mCurrentProcess, mMaxProcess);
             mSeekBar.setProgress(progress);
             mHandler.postDelayed(this, 1000);
@@ -258,6 +259,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mSongTitleTextView = (TextView) getView().findViewById(R.id.textview_songtitle);
         mSongArtistTextView = (TextView) getView().findViewById(R.id.textview_artist);
         mSongDurationTextView = (TextView) getView().findViewById(R.id.textview_songduration);
+        mSongCurPositionTextView = (TextView) getView().findViewById(R.id.textview_songcurrentposition);
         mControllerFrag = (FrameLayout) getView().findViewById(R.id.controller_fragment_container);
 
     }
@@ -398,21 +400,17 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
       return bitmap;
   }
 
-    public void checkServiceRunning() {
+    public boolean checkServiceRunning() {
         if (mMusicSrv == null) {
-            mMusicSrvIsRunning = false;
-            return;
+            return false;
         } else {
             if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
-                mMusicSrvIsRunning = true;
+                return true;
+            }else{
+                return false;
             }
         }
-
     }
-
-  public boolean srvIsRunning(){
-      return mMusicSrvIsRunning;
-  }
 
   private void setAlbumImage() {
       long id = mMusicSrv.getCurrentSongId();
