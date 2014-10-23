@@ -50,20 +50,19 @@ public class MainActivity extends Activity implements OnPlaySongListener {
             addControllerFragment();
         }
         /* There is a bug on certain devices*/
-        if (isServiceRunning(MusicService.class)) {
+        /*if (isServiceRunning(MusicService.class)) {
             setControlFragContainerVisiblity();
-        }
-        /*
-        if(mControllerFragment != null){
+        }*/
+        
+        if(MusicService.class != null && mControllerFragment != null){
             mControllerFragment.checkServiceRunning();
-            Log.d(TAG,"srvIsRunning() = "+ mControllerFragment.srvIsRunning());
-            if(mControllerFragment.srvIsRunning()){
+            Log.d(TAG,"srvIsRunning() = "+ mControllerFragment.checkServiceRunning());
+            if(mControllerFragment.checkServiceRunning()){
                 setControlFragContainerVisiblity();
             }
         }else{
-            Log.e(TAG, "mControllerFragment is null");
-        }*/
-        
+            Log.e(TAG, "music service or controller frag is null");
+        }
 
         Log.i(TAG, " onCreate");
 

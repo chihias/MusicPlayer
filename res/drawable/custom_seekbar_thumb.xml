@@ -2,8 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- thumb pressed -->
-    <item 
-        android:drawable="@drawable/seekbar_thumb_pressed"
+    <item android:drawable="@drawable/seekbar_thumb_pressed"
         android:state_pressed="true">
     </item>
 

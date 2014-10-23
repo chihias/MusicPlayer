@@ -206,7 +206,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
+    public boolean onUnbind(Intent intent) {   
         Log.i(TAG, "onUnbind");
         // mMediaPlayer.stop();
         // mMediaPlayer.release();
