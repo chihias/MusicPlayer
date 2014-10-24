@@ -42,6 +42,10 @@ import android.widget.Toast;
 
 public class ControllerFragment extends Fragment implements View.OnClickListener {
 
+    public interface OnServiceStateListener{
+        public void onServiceConnectedListener();
+    }
+
     public final static String ARG_POSITION = "position";
     public static final Uri MUSIC_URI = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
@@ -63,6 +67,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     private long mCurrentProcess;
     private long mMaxProcess;
     private final int PRO = 1;
+    private int mCurrentSongId;
 
     // private Button mStopButton;
     private MusicService mMusicSrv = null;
@@ -71,7 +76,8 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     private static final String TAG = "MUSIC_PLAYER_CONTROLLER_FRAG";
 
-    private int mCurrentSongId;
+    private OnServiceStateListener mOnServiceStateListener;
+
     private ServiceConnection mMusicConnection = new ServiceConnection() {
 
         @Override
@@ -79,6 +85,11 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             Log.i(TAG, "onServiceConnected");
             MusicBinder binder = (MusicBinder) service;
             mMusicSrv = binder.getService();
+
+            /* Set Interface to notice mainActivity that service is connected */
+            if(mOnServiceStateListener != null){
+                mOnServiceStateListener.onServiceConnectedListener();
+            }
 
             /* Music Service Prepared */
             mMusicSrv.setOnMusicStateListener(new OnMusicStateListener() {
@@ -127,6 +138,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             mMusicSrv = null;
+            Log.i(TAG, "onServiceDisConnected");
             // mActivity.stopService(mPlayIntent);
         }
     };
@@ -295,7 +307,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     }
 
-    public void updateControllerView() {
+    private void updateControllerView() {
         mSongTitleTextView.setText(mMusicSrv.getCurrentSongTitle());
         mSongArtistTextView.setText(mMusicSrv.getCurrentSongArtist());
 
@@ -309,6 +321,17 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
             mPlayandPauseButton.setBackgroundResource(R.drawable.play_btn);
         }
 
+    }
+
+    private void setAlbumImage() {
+        long id = mMusicSrv.getCurrentSongId();
+        Uri musicExternalUri = ContentUris.withAppendedId(MUSIC_URI, id);
+        Bitmap albumImage = getMusicAlbumArt(getSongPath(mActivity, musicExternalUri));
+        if (albumImage != null) {
+            mAlbumImage.setImageBitmap(albumImage);
+        } else {
+            mAlbumImage.setImageResource(R.drawable.no_album_image);
+        }
     }
 
     public void onPlaySong(View view) {
@@ -370,7 +393,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
       } else {
           filePath = uri.toString();
       }
-      Log.d(TAG, "path= " + filePath);
+      //Log.d(TAG, "path= " + filePath);
       return filePath;
   }
 
@@ -402,6 +425,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
 
     public boolean checkServiceRunning() {
         if (mMusicSrv == null) {
+            Log.d(TAG,"service is null");
             return false;
         } else {
             if (mMusicSrv.isPaused() || mMusicSrv.isPng()) {
@@ -412,16 +436,13 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         }
     }
 
-  private void setAlbumImage() {
-      long id = mMusicSrv.getCurrentSongId();
-      Uri musicExternalUri = ContentUris.withAppendedId(MUSIC_URI, id);
-      Bitmap albumImage = getMusicAlbumArt(getSongPath(mActivity, musicExternalUri));
-      if (albumImage != null) {
-          mAlbumImage.setImageBitmap(albumImage);
-      } else {
-          mAlbumImage.setImageResource(R.drawable.no_album_image);
-      }
-  }
+    public void setOnServiceConnectedListener(OnServiceStateListener listener){
+        mOnServiceStateListener = listener;
+    }
+
+    public void setmOnServiceStateListenerNull(){
+        mOnServiceStateListener = null;
+    }
 
 
 }

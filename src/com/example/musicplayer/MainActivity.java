@@ -2,6 +2,7 @@ package com.example.musicplayer;
 
 import java.util.ArrayList;
 
+import com.example.musicplayer.ControllerFragment.OnServiceStateListener;
 import com.example.musicplayer.ListFragment.OnPlaySongListener;
 import com.example.musicplayer.MusicService.MusicBinder;
 
@@ -28,6 +29,8 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     private MusicService mMusicService;
     private static final String TAG = "MUSIC_PLAYER_MAIN_ACTIVITY";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,17 +52,26 @@ public class MainActivity extends Activity implements OnPlaySongListener {
             }
             addControllerFragment();
         }
-        /* There is a bug on certain devices*/
-        /*if (isServiceRunning(MusicService.class)) {
-            setControlFragContainerVisiblity();
-        }*/
-        
+//        /* There is a bug on certain devices*/
+//        if (isServiceRunning(MusicService.class)) {
+//            setControlFragContainerVisiblity();
+//        }
+
         if(MusicService.class != null && mControllerFragment != null){
-            mControllerFragment.checkServiceRunning();
-            Log.d(TAG,"srvIsRunning() = "+ mControllerFragment.checkServiceRunning());
-            if(mControllerFragment.checkServiceRunning()){
-                setControlFragContainerVisiblity();
-            }
+
+            /* Make sure service is connected before checking whether music is play-or-pause or not */
+            mControllerFragment.setOnServiceConnectedListener(new OnServiceStateListener() {
+                
+                @Override
+                public void onServiceConnectedListener() {
+                    // TODO Auto-generated method stub
+                    if(mControllerFragment.checkServiceRunning()){
+                        setControlFragContainerVisiblity();
+                    }
+                }
+
+            });
+            
         }else{
             Log.e(TAG, "music service or controller frag is null");
         }
@@ -125,6 +137,9 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         super.onDestroy();
         // mControllerFragment.stopMusicService();
         // stopService(new Intent(this,MusicService.class));
+
+        /* Make Sure Listener is closed */
+        mControllerFragment.setmOnServiceStateListenerNull();
         Log.i(TAG, "onDestroy");
     }
 
@@ -154,14 +169,14 @@ public class MainActivity extends Activity implements OnPlaySongListener {
         return false;
     }
 
-    public boolean getControlFragContainerVisibility() {
+    private boolean getControlFragContainerVisibility() {
         if (mControlFragContainer.getVisibility() == View.VISIBLE)
             return true;
         else
             return false;
     }
 
-    public void setControlFragContainerVisiblity() {
+    private void setControlFragContainerVisiblity() {
         mControlFragContainer.setVisibility(View.VISIBLE);
     }
 

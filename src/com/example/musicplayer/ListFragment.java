@@ -121,7 +121,7 @@ public class ListFragment extends Fragment {
     }
 
     // a helper method
-    public void getSongList() {
+    private void getSongList() {
         ContentResolver musicResolver = mActivity.getContentResolver();
         Uri musicExternalUri = mControllerFragment.MUSIC_URI;
         Cursor musicCursor = musicResolver.query(musicExternalUri, null, null, null, null);

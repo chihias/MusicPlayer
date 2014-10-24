@@ -140,6 +140,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 //                this.pausePlayer();
 //            }
 //        }
+        
+        
+        
+        
 
         return START_NOT_STICKY;
     }
