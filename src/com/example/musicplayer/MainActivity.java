@@ -26,7 +26,6 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     private ControllerFragment mControllerFragment;
     private ListFragment mListFragment;
     private View mControlFragContainer;
-    private MusicService mMusicService;
     private static final String TAG = "MUSIC_PLAYER_MAIN_ACTIVITY";
 
 
@@ -35,21 +34,18 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (savedInstanceState != null) {
+            return;
+        }
 
         mListFragment = new ListFragment();
         mControllerFragment = new ControllerFragment();
         mControlFragContainer = findViewById(R.id.controller_fragment_container);
 
         if (findViewById(R.id.list_fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
             addListFragment();
         }
         if (findViewById(R.id.controller_fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
             addControllerFragment();
         }
 //        /* There is a bug on certain devices*/
@@ -57,11 +53,12 @@ public class MainActivity extends Activity implements OnPlaySongListener {
 //            setControlFragContainerVisiblity();
 //        }
 
+        /* Set controller Fragment visible or not */
         if(MusicService.class != null && mControllerFragment != null){
 
             /* Make sure service is connected before checking whether music is play-or-pause or not */
             mControllerFragment.setOnServiceConnectedListener(new OnServiceStateListener() {
-                
+
                 @Override
                 public void onServiceConnectedListener() {
                     // TODO Auto-generated method stub
@@ -71,9 +68,6 @@ public class MainActivity extends Activity implements OnPlaySongListener {
                 }
 
             });
-            
-        }else{
-            Log.e(TAG, "music service or controller frag is null");
         }
 
         Log.i(TAG, " onCreate");
@@ -83,7 +77,6 @@ public class MainActivity extends Activity implements OnPlaySongListener {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override

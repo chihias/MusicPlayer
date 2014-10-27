@@ -149,7 +149,6 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         public void run() {
             mMaxProcess = mMusicSrv.getDur();
             mCurrentProcess = mMusicSrv.getPosn();
-            mSongDurationTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getDur()));
             mSongCurPositionTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getPosn()));
             int progress = (int) mUtils.getProgressPercentage(mCurrentProcess, mMaxProcess);
             mSeekBar.setProgress(progress);
@@ -241,9 +240,9 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mMusicSrv.setmOnHeadsetPlugOutListenerNull();
         mMusicSrv.setmOnMusicStateListenerNull();
         mMusicSrv.setmOnNotificationBtnClickedListenerNull();
-        
+
         if (mMusicSrv!=null)         mActivity.unbindService(mMusicConnection);
-        
+
         Log.d(TAG,"onDestroy");
         //Toast.makeText(mActivity, "onDestroy", Toast.LENGTH_SHORT).show();
     }
@@ -314,6 +313,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         //get embedded picture of each song and set album image
         setAlbumImage();
 
+        mSongDurationTextView.setText(mUtils.milliSecondsToTimer(mMusicSrv.getDur()));
         mHandler.post(mUpdateSeekbarTask);
 
         mPlayandPauseButton.setBackgroundResource(R.drawable.pause_btn);
@@ -335,6 +335,7 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
     }
 
     public void onPlaySong(View view) {
+        Log.i(TAG, "onPlaySong");
         mActivity.startService(mPlayIntent);
         // mActivity.bindService(mPlayIntent, mMusicConnection,
         // Context.BIND_AUTO_CREATE);
@@ -342,7 +343,6 @@ public class ControllerFragment extends Fragment implements View.OnClickListener
         mHandler.removeCallbacks(mUpdateSeekbarTask);
         mCurrentSongId = Integer.parseInt(view.getTag().toString());
         mMusicSrv.setSong(mCurrentSongId);
-        Log.i(TAG, "onPlaySong");
         mMusicSrv.playSong();
         // updateControllerView();
 

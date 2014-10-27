@@ -140,10 +140,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 //                this.pausePlayer();
 //            }
 //        }
-        
-        
-        
-        
 
         return START_NOT_STICKY;
     }
@@ -156,47 +152,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             mOnMusicStateListener.onMusicPrepareCompleteListener();
         }
 
-        // Intent notIntent = new Intent(this, MainActivity.class);
-        // notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        // PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
-        // PendingIntent.FLAG_UPDATE_CURRENT);
-        // Notification.Builder builder = new Notification.Builder(this);
-        // builder.setContentIntent(pendInt).setSmallIcon(R.drawable.play).setTicker(mSongTitle)
-        // .setOngoing(true).setContentTitle("Playing").setContentText(mSongTitle);
-        // Notification nof = builder.build();
-        // startForeground(NOTIFY_ID, nof);
-
-        Intent notIntent = new Intent(this, MainActivity.class);
-        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent playAndPauseBtnClicked = new Intent();
-        playAndPauseBtnClicked.setAction(ACTION_PLAY_AND_PAUSE_MUSIC);
-        PendingIntent pendIntPlayAndPause = PendingIntent.getBroadcast(this, 0,
-                playAndPauseBtnClicked, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Intent stopBtnClicked = new Intent();
-        stopBtnClicked.setAction(ACTION_STOP_MUSIC);
-        PendingIntent pendIntStop = PendingIntent.getBroadcast(this, 0, stopBtnClicked,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        mContentView = new RemoteViews(getPackageName(), R.layout.music_player_notification);
-        mBuilder = new Notification.Builder(this);
-
-        mBuilder.setSmallIcon(R.drawable.headset_blue).setContent(mContentView)
-                .setContentIntent(pendInt);
-
-        mContentView.setImageViewResource(R.id.notification_icon, R.drawable.headset_white);
-        mContentView.setTextViewText(R.id.notification_artist_title, mSongArtist);
-        mContentView.setTextViewText(R.id.notification_song_title, mSongTitle);
-        mContentView.setOnClickPendingIntent(R.id.notification_playandpause_button,
-                pendIntPlayAndPause);
-        mContentView.setOnClickPendingIntent(R.id.notification_stop_button, pendIntStop);
-        mContentView.setImageViewResource(R.id.notification_playandpause_button,
-                R.drawable.pause_btn);
-        Notification nof = mBuilder.build();
-        startForeground(NOTIFY_ID, nof);
+        setCustomNotification();
 
     }
 
@@ -405,6 +361,50 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private void unregisterReceiver() {
         this.unregisterReceiver(mHeadsetPlugReceiver);
         this.unregisterReceiver(mBtnClickedReceiver);
+    }
+
+    private void setCustomNotification(){
+     // Intent notIntent = new Intent(this, MainActivity.class);
+        // notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
+        // PendingIntent.FLAG_UPDATE_CURRENT);
+        // Notification.Builder builder = new Notification.Builder(this);
+        // builder.setContentIntent(pendInt).setSmallIcon(R.drawable.play).setTicker(mSongTitle)
+        // .setOngoing(true).setContentTitle("Playing").setContentText(mSongTitle);
+        // Notification nof = builder.build();
+        // startForeground(NOTIFY_ID, nof);
+
+        Intent notIntent = new Intent(this, MainActivity.class);
+        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent playAndPauseBtnClicked = new Intent();
+        playAndPauseBtnClicked.setAction(ACTION_PLAY_AND_PAUSE_MUSIC);
+        PendingIntent pendIntPlayAndPause = PendingIntent.getBroadcast(this, 0,
+                playAndPauseBtnClicked, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent stopBtnClicked = new Intent();
+        stopBtnClicked.setAction(ACTION_STOP_MUSIC);
+        PendingIntent pendIntStop = PendingIntent.getBroadcast(this, 0, stopBtnClicked,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mContentView = new RemoteViews(getPackageName(), R.layout.music_player_notification);
+        mBuilder = new Notification.Builder(this);
+
+        mBuilder.setSmallIcon(R.drawable.headset_blue).setContent(mContentView)
+                .setContentIntent(pendInt);
+
+        mContentView.setImageViewResource(R.id.notification_icon, R.drawable.headset_white);
+        mContentView.setTextViewText(R.id.notification_artist_title, mSongArtist);
+        mContentView.setTextViewText(R.id.notification_song_title, mSongTitle);
+        mContentView.setOnClickPendingIntent(R.id.notification_playandpause_button,
+                pendIntPlayAndPause);
+        mContentView.setOnClickPendingIntent(R.id.notification_stop_button, pendIntStop);
+        mContentView.setImageViewResource(R.id.notification_playandpause_button,
+                R.drawable.pause_btn);
+        Notification nof = mBuilder.build();
+        startForeground(NOTIFY_ID, nof);
     }
 
     private void updateNotificationView(Context context) {
