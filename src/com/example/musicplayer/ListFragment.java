@@ -146,7 +146,9 @@ public class ListFragment extends Fragment {
                 } while (musicCursor.moveToNext());
             }
         } finally {
-            musicCursor.close();
+            if(musicCursor != null) {
+                musicCursor.close();
+            }
         }
     }
 
