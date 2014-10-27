@@ -6,7 +6,7 @@
         android:state_pressed="true">
     </item>
 
-    <!-- unfocused -->
+    <!-- Normal -->
     <item android:state_focused="false"
         android:state_pressed="false"
         android:drawable="@drawable/seekbar_thumb">
